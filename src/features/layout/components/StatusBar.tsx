@@ -1,15 +1,18 @@
 import React from 'react';
 import { CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
+import { useJsonStore } from '../../../store/jsonStore';
 
 export const StatusBar: React.FC = () => {
   const { isValid, errors, jsonData } = useJsonData();
+  const { inputType } = useJsonStore();
 
   const getStatus = () => {
     if (isValid) {
+      const statusText = inputType === 'base64' ? 'Valid Base64' : 'Valid JSON';
       return {
         icon: <CheckCircle size={16} className="text-green-500" />,
-        text: 'Valid JSON',
+        text: statusText,
         bgColor: 'bg-green-50 dark:bg-green-900/20',
         textColor: 'text-green-700 dark:text-green-300'
       };
@@ -25,8 +28,8 @@ export const StatusBar: React.FC = () => {
 
   const status = getStatus();
   const dataType = Array.isArray(jsonData) ? 'Array' : typeof jsonData;
-  const itemCount = Array.isArray(jsonData) 
-    ? jsonData.length 
+  const itemCount = Array.isArray(jsonData)
+    ? jsonData.length
     : (jsonData && typeof jsonData === 'object' ? Object.keys(jsonData).length : 0);
 
   return (
@@ -46,7 +49,7 @@ export const StatusBar: React.FC = () => {
             <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
               <span>Type: <span className="font-mono">{dataType}</span></span>
               <span>
-                {Array.isArray(jsonData) ? 'Items' : 'Keys'}: 
+                {Array.isArray(jsonData) ? 'Items' : 'Keys'}:
                 <span className="font-mono ml-1">{itemCount}</span>
               </span>
             </div>
@@ -60,7 +63,7 @@ export const StatusBar: React.FC = () => {
             <span>Processed locally</span>
           </div>
 
-          
+
         </div>
       </div>
     </div>

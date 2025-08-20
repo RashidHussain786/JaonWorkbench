@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, FileJson } from 'lucide-react';
+import { FileJson } from 'lucide-react';
 import { useJsonStore } from '../../../store/jsonStore';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
 import { importFromFile } from '../../file-operations/utils/fileHelpers';
@@ -12,10 +12,10 @@ export const FileDropzone: React.FC = () => {
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
-    
+
     const file = acceptedFiles[0];
     setLoading(true);
-    
+
     try {
       const result = await importFromFile(file);
       if (result.success && result.data) {
@@ -54,8 +54,8 @@ export const FileDropzone: React.FC = () => {
       <div className={`
         bg-white dark:bg-gray-800 rounded-lg border-2 border-dashed p-8 text-center max-w-md mx-4
         transition-all duration-300 transform
-        ${isDragActive 
-          ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20 scale-105' 
+        ${isDragActive
+          ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20 scale-105'
           : 'border-gray-300 dark:border-gray-600 scale-100'
         }
       `}>

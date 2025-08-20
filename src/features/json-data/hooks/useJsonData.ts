@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { JsonError, HistoryState } from '../../../common/types';
-import { validateJson, formatJson } from '../../../utils/jsonHelpers';
+import { validateJson, formatJson, isBase64 } from '../../../utils/jsonHelpers';
+import { useJsonStore } from '../../../store/jsonStore';
 
 interface JsonDataStoreState {
   jsonData: any;
@@ -42,9 +43,9 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
   currentHistoryIndex: -1,
 
   setJsonData: (data: any, action = 'update') => {
-    const jsonString = formatJson(data);
+    const jsonString = JSON.stringify(data, null, 2);
     const state = get();
-    
+
     // Add to history
     const newHistoryItem: HistoryState = {
       data: state.jsonData,
@@ -55,7 +56,7 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
 
     const newHistory = state.history.slice(0, state.currentHistoryIndex + 1);
     newHistory.push(newHistoryItem);
-    
+
     if (newHistory.length > MAX_HISTORY) {
       newHistory.shift();
     }
@@ -71,28 +72,46 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
   },
 
   setJsonString: (str: string, action = 'edit') => {
-    const validation = validateJson(str);
+    const { inputType } = useJsonStore.getState(); // Get current inputType
     const state = get();
-    
-    if (validation.isValid && validation.data !== undefined) {
-      // Add to history
+
+    let isValid = true;
+    let errors: JsonError[] = [];
+    let parsedData: any = {};
+
+    if (inputType === 'base64') {
+      if (!isBase64(str)) {
+        isValid = false;
+        errors = [{ message: 'Invalid Base64 string', type: 'syntax' }];
+      }
+      // No parsing for base64, jsonData remains empty or previous
+      parsedData = state.jsonData; // Keep previous valid JSON data if any
+    } else { // inputType === 'json'
+      const validation = validateJson(str);
+      isValid = validation.isValid;
+      errors = validation.errors || [];
+      parsedData = validation.data || {};
+    }
+
+    if (isValid) {
+      // Add to history only if valid
       const newHistoryItem: HistoryState = {
-        data: state.jsonData,
-        jsonString: state.jsonString,
+        data: state.jsonData, // Store previous valid JSON data
+        jsonString: state.jsonString, // Store previous valid jsonString
         timestamp: Date.now(),
         action
       };
 
       const newHistory = state.history.slice(0, state.currentHistoryIndex + 1);
       newHistory.push(newHistoryItem);
-      
+
       if (newHistory.length > MAX_HISTORY) {
         newHistory.shift();
       }
 
       set({
         jsonString: str,
-        jsonData: validation.data,
+        jsonData: parsedData,
         isValid: true,
         errors: [],
         history: newHistory,
@@ -102,19 +121,39 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
       set({
         jsonString: str,
         isValid: false,
-        errors: validation.errors || []
+        errors: errors
       });
     }
   },
 
-  validateAndUpdate: (jsonString: string) => {
-    const validation = validateJson(jsonString);
-    set({
-      jsonString,
-      jsonData: validation.data || {},
-      isValid: validation.isValid,
-      errors: validation.errors || []
-    });
+  validateAndUpdate: (content: string) => {
+    const { inputType } = useJsonStore.getState(); // Get current inputType
+
+    if (inputType === 'base64') {
+      if (isBase64(content)) {
+        set({
+          jsonString: content,
+          jsonData: {}, // No parsed data for base64
+          isValid: true,
+          errors: []
+        });
+      } else {
+        set({
+          jsonString: content,
+          jsonData: {},
+          isValid: false,
+          errors: [{ message: 'Invalid Base64 string', type: 'syntax' }]
+        });
+      }
+    } else { // inputType === 'json'
+      const validation = validateJson(content);
+      set({
+        jsonString: content,
+        jsonData: validation.data || {},
+        isValid: validation.isValid,
+        errors: validation.errors || []
+      });
+    }
   },
 
   formatJson: () => {

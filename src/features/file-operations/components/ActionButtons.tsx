@@ -1,14 +1,24 @@
 import React from 'react';
-import { FileDown, FileUp, Copy, Clipboard, Undo, Redo } from 'lucide-react';
+import { FileDown, FileUp, Copy, Clipboard, Undo, Redo, Key } from 'lucide-react';
 import { useFileOperations } from '../hooks/useFileOperations';
+import { useJsonStore } from '../../../store/jsonStore';
 
 export const ActionButtons: React.FC = () => {
-  const { handleCopy, handlePaste, handleFormat, handleMinify, undo, redo, canUndo, canRedo } = useFileOperations();
+  const { handleCopy, handlePaste, handleFormat, handleMinify, undo, redo, canUndo, canRedo, handleDecodeBase64 } = useFileOperations();
+  const { inputType } = useJsonStore();
 
   return (
     <div className="flex items-center space-x-2">
       {/* File Operations */}
       <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+        <button
+          onClick={handleDecodeBase64}
+          disabled={inputType !== 'base64'}
+          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Decode Base64 to JSON"
+        >
+          <Key size={18} className="text-gray-700 dark:text-gray-300" />
+        </button>
         <button
           onClick={handleFormat}
           className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"

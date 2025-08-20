@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { Header, Sidebar, StatusBar, FileDropzone, ModeSelector } from './features/layout/components/index';
+import { Header, Sidebar, StatusBar, FileDropzone, ModeSelector, InputTypeSelector } from './features/layout/components/index';
 import { SearchBar } from './features/search/components/index';
 import { ActionButtons } from './features/file-operations/components/index';
 import { CodeEditor, TreeView, TableView } from './features/json-data/components/index';
@@ -81,6 +81,7 @@ function App() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-2">
                   <ModeSelector />
+                  <InputTypeSelector />
                   <ActionButtons />
                   <SearchBar />
                 </div>

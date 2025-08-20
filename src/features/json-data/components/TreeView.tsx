@@ -73,7 +73,7 @@ export const TreeView: React.FC = () => {
           invertTheme={false}
           sortObjectKeys={false}
           hideRoot={false}
-          getItemString={(type, data, itemType, itemString, keyPath) => {
+          getItemString={(type, data, itemString) => {
             const itemsCount = Array.isArray(data) ? data.length :
               (data && typeof data === 'object') ? Object.keys(data).length : 0;
 
@@ -85,7 +85,7 @@ export const TreeView: React.FC = () => {
               </span>
             );
           }}
-          labelRenderer={(keyPath, nodeType, expanded, expandable) => {
+          labelRenderer={(keyPath) => {
             const key = keyPath[0];
             return (
               <span className="font-medium text-blue-600 dark:text-blue-400">
@@ -93,7 +93,7 @@ export const TreeView: React.FC = () => {
               </span>
             );
           }}
-          valueRenderer={(raw, value, ...keyPath) => {
+          valueRenderer={(value) => {
             if (typeof value === 'string') {
               return (
                 <span className="text-green-600 dark:text-green-400">

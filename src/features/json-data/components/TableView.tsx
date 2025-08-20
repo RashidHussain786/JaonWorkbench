@@ -119,7 +119,7 @@ export const TableView: React.FC = () => {
                 {tableData.headers.map((header, cellIndex) => (
                   <td
                     key={cellIndex}
-                    className="px-4 py-3 whitespace-nowrap text-sm border-r border-gray-200 dark:border-gray-700 last:border-r-0"
+                    className="px-4 py-3 text-sm border-r border-gray-200 dark:border-gray-700 last:border-r-0 break-words"
                   >
                     {renderCellValue(row.data[header])}
                   </td>

@@ -1,4 +1,5 @@
-import { JsonError } from '../types';
+import { JsonError } from "../common/types";
+
 
 export interface JsonValidationResult {
   isValid: boolean;
@@ -23,11 +24,11 @@ export function validateJson(jsonString: string): JsonValidationResult {
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown parsing error';
-    
+
     // Extract line and column info from syntax errors
     const match = errorMessage.match(/at position (\d+)/);
     let line, column;
-    
+
     if (match) {
       const position = parseInt(match[1]);
       const lines = jsonString.substring(0, position).split('\n');
@@ -66,18 +67,18 @@ export function minifyJson(data: any): string {
 export function getJsonStats(data: any): { size: number; depth: number; keys: number } {
   const jsonString = JSON.stringify(data);
   const size = new Blob([jsonString]).size;
-  
+
   function getDepth(obj: any, currentDepth = 0): number {
     if (obj === null || typeof obj !== 'object') {
       return currentDepth;
     }
-    
+
     if (Array.isArray(obj)) {
-      return obj.reduce((maxDepth, item) => 
+      return obj.reduce((maxDepth: number, item: any) =>
         Math.max(maxDepth, getDepth(item, currentDepth + 1)), currentDepth);
     }
-    
-    return Object.values(obj).reduce((maxDepth, value) => 
+
+    return Object.values(obj).reduce((maxDepth: number, value: any) =>
       Math.max(maxDepth, getDepth(value, currentDepth + 1)), currentDepth);
   }
 
@@ -85,12 +86,12 @@ export function getJsonStats(data: any): { size: number; depth: number; keys: nu
     if (obj === null || typeof obj !== 'object') {
       return 0;
     }
-    
+
     if (Array.isArray(obj)) {
-      return obj.reduce((count, item) => count + countKeys(item), 0);
+      return obj.reduce((count: number, item: any) => count + countKeys(item), 0);
     }
-    
-    return Object.keys(obj).length + Object.values(obj).reduce((count, value) => 
+
+    return Object.keys(obj).length + Object.values(obj).reduce((count: number, value: any) =>
       count + countKeys(value), 0);
   }
 
@@ -101,13 +102,13 @@ export function getJsonStats(data: any): { size: number; depth: number; keys: nu
   };
 }
 
-export function searchInJson(data: any, query: string): Array<{path: string; value: any}> {
-  const results: Array<{path: string; value: any}> = [];
+export function searchInJson(data: any, query: string): Array<{ path: string; value: any }> {
+  const results: Array<{ path: string; value: any }> = [];
   const queryLower = query.toLowerCase();
-  
+
   function search(obj: any, path: string) {
     if (obj === null || obj === undefined) return;
-    
+
     if (typeof obj === 'string' || typeof obj === 'number') {
       if (String(obj).toLowerCase().includes(queryLower)) {
         results.push({ path, value: obj });
@@ -120,19 +121,28 @@ export function searchInJson(data: any, query: string): Array<{path: string; val
       } else {
         Object.entries(obj).forEach(([key, value]) => {
           const newPath = path ? `${path}.${key}` : key;
-          
+
           // Search in key names
           if (key.toLowerCase().includes(queryLower)) {
             results.push({ path: newPath, value });
           }
-          
+
           // Search in values
           search(value, newPath);
         });
       }
     }
   }
-  
+
   search(data, '');
   return results;
+}
+
+export function isBase64(str: string): boolean {
+  if (str === null || typeof str !== 'string') {
+    return false;
+  }
+  // Check for valid Base64 characters and padding
+  const base64Regex = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+  return base64Regex.test(str);
 }

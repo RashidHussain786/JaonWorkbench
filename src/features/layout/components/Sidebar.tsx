@@ -1,11 +1,11 @@
 import React from 'react';
-import { Info, Zap, X } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
 import { getJsonStats } from '../../../utils/jsonHelpers';
 
 export const Sidebar: React.FC = () => {
   const { jsonData, isValid } = useJsonData();
-  
+
   const stats = isValid ? getJsonStats(jsonData) : null;
 
   const formatSize = (bytes: number): string => {
@@ -18,7 +18,7 @@ export const Sidebar: React.FC = () => {
 
   return (
     <div className="w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 flex flex-col">
-      
+
 
       {/* Stats Section */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -26,7 +26,7 @@ export const Sidebar: React.FC = () => {
           <Info size={18} className="text-gray-500" />
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">JSON Stats</span>
         </div>
-        
+
         {stats ? (
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -49,7 +49,7 @@ export const Sidebar: React.FC = () => {
         )}
       </div>
 
-      
+
 
       {/* Help Section */}
       <div className="p-4 flex-1">

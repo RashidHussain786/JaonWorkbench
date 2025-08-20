@@ -8,7 +8,7 @@ import * as monaco from 'monaco-editor';
 export const CodeEditor: React.FC = () => {
   const { jsonString, setJsonString, errors, isValid } = useJsonData();
   const { theme } = useTheme();
-  const { searchQuery } = useJsonStore();
+  const { searchQuery, inputType } = useJsonStore();
   const editorRef = useRef<any>(null);
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
@@ -63,9 +63,22 @@ export const CodeEditor: React.FC = () => {
       const monaco = (window as any).monaco;
       if (monaco) {
         monaco.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
+
+        // Control JSON diagnostics based on inputType
+        if (inputType === 'base64') {
+          monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+            validate: false,
+            schemas: []
+          });
+        } else {
+          monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+            validate: true,
+            schemas: [] // You might have actual schemas here
+          });
+        }
       }
     }
-  }, [theme]);
+  }, [theme, inputType]);
 
   const decorationIdsRef = useRef<string[]>([]);
 
@@ -95,27 +108,32 @@ export const CodeEditor: React.FC = () => {
 
   // Add error markers
   useEffect(() => {
-    if (editorRef.current && errors.length > 0) {
+    if (editorRef.current) {
       const monaco = (window as any).monaco;
       if (monaco) {
-        const markers = errors.map(error => ({
-          startLineNumber: error.line || 1,
-          startColumn: error.column || 1,
-          endLineNumber: error.line || 1,
-          endColumn: (error.column || 1) + 1,
-          message: error.message,
-          severity: monaco.MarkerSeverity.Error
-        }));
-        monaco.editor.setModelMarkers(editorRef.current.getModel(), 'json', markers);
+        // Clear existing markers first
+        monaco.editor.setModelMarkers(editorRef.current.getModel(), 'json', []);
+
+        if (!isValid && errors.length > 0 && inputType === 'json') { // Only show markers for JSON errors
+          const markers = errors.map(error => ({
+            startLineNumber: error.line || 1,
+            startColumn: error.column || 1,
+            endLineNumber: error.line || 1,
+            endColumn: (error.column || 1) + 1,
+            message: error.message,
+            severity: monaco.MarkerSeverity.Error
+          }));
+          monaco.editor.setModelMarkers(editorRef.current.getModel(), 'json', markers);
+        }
       }
     }
-  }, [errors]);
+  }, [errors, isValid, inputType]);
 
   return (
     <div className="h-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
       <Editor
         height="100%"
-        defaultLanguage="json"
+        defaultLanguage={inputType === 'base64' ? 'plaintext' : 'json'}
         value={jsonString}
         onChange={(value) => setJsonString(value || '', 'edit')}
         onMount={handleEditorDidMount}

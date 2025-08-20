@@ -2,9 +2,25 @@ import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { exportToFile, copyToClipboard, readFromClipboard } from '../utils/fileHelpers';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
+import { useJsonStore } from '../../../store/jsonStore';
+import { isBase64, formatJson as formatJsonUtil } from '../../../utils/jsonHelpers';
 
-export const useFileOperations = () => {
+interface UseFileOperationsReturn {
+  handleExport: () => void;
+  handleCopy: () => Promise<void>;
+  handlePaste: () => Promise<void>;
+  handleFormat: () => void;
+  handleMinify: () => void;
+  undo: () => void;
+  redo: () => void;
+  canUndo: () => boolean;
+  canRedo: () => boolean;
+  handleDecodeBase64: () => void;
+}
+
+export const useFileOperations = (): UseFileOperationsReturn => {
   const { jsonData, jsonString, setJsonString, formatJson, minifyJson, undo, redo, canUndo, canRedo } = useJsonData();
+  const { setInputType } = useJsonStore();
 
   const handleExport = useCallback(() => {
     try {
@@ -27,7 +43,7 @@ export const useFileOperations = () => {
   const handlePaste = useCallback(async () => {
     const text = await readFromClipboard();
     if (text) {
-      setJsonString(text, 'paste');
+      setJsonString(text.trim(), 'paste'); // Added .trim()
       toast.success('JSON pasted from clipboard!');
     } else {
       toast.error('Failed to read from clipboard');
@@ -44,6 +60,36 @@ export const useFileOperations = () => {
     toast.success('JSON minified!');
   }, [minifyJson]);
 
+  const handleDecodeBase64 = useCallback(() => {
+    if (!jsonString) {
+      toast.error('No content to decode.');
+      return;
+    }
+
+    if (!isBase64(jsonString)) {
+      toast.error('Content is not a valid Base64 string.');
+      return;
+    }
+
+    try {
+      const decoded = atob(jsonString); // Decode Base64
+      let parsedJson;
+      try {
+        parsedJson = JSON.parse(decoded); // Try to parse as JSON
+      } catch (jsonError) {
+        toast.error('Decoded content is not valid JSON.');
+        return;
+      }
+
+      const formattedJson = formatJsonUtil(parsedJson);
+      setJsonString(formattedJson, 'decode_base64');
+      setInputType('json'); // Switch input type to JSON
+      toast.success('Base64 decoded and formatted as JSON!');
+    } catch (error) {
+      toast.error('Failed to decode Base64: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
+  }, [jsonString, setJsonString, setInputType]);
+
   return {
     handleExport,
     handleCopy,
@@ -54,5 +100,6 @@ export const useFileOperations = () => {
     redo,
     canUndo,
     canRedo,
+    handleDecodeBase64,
   };
 };
