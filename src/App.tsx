@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Header } from './components/Header';
 import { ModeSelector } from './components/ModeSelector';
+import { SearchBar } from './components/SearchBar';
+import { ActionButtons } from './components/ActionButtons';
 import { CodeEditor } from './components/CodeEditor';
 import { TreeView } from './components/TreeView';
 import { TableView } from './components/TableView';
@@ -75,18 +77,11 @@ function App() {
         <div className="flex-1 flex flex-col p-4">
           {/* Mode Selector and Ad Space */}
           <div className="flex items-center justify-between mb-4">
-            <ModeSelector />
-
-            {/* Header Ad Space */}
-            {useJsonStore.getState().showAds && !useJsonStore.getState().isPremium && (
-              <div className="hidden lg:block bg-gray-100 dark:bg-gray-800 border-2 border-dashed 
-                            border-gray-300 dark:border-gray-600 rounded-lg px-6 py-3 text-center">
-                <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Advertisement</div>
-                <div className="bg-gradient-to-r from-purple-400 to-pink-500 text-white text-xs py-1 px-3 rounded">
-                  Your Ad Here • 728x90
-                </div>
-              </div>
-            )}
+            <div className="flex items-center space-x-2">
+              <ModeSelector />
+              <ActionButtons />
+              <SearchBar />
+            </div>
           </div>
 
           {/* Editor */}

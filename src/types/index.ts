@@ -8,8 +8,7 @@ export interface JsonEditorState {
   history: HistoryState[];
   currentHistoryIndex: number;
   isLoading: boolean;
-  showAds: boolean;
-  isPremium: boolean;
+  searchQuery: string;
 }
 
 export interface JsonError {

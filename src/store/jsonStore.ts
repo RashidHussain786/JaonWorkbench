@@ -17,23 +17,31 @@ interface JsonStore extends JsonEditorState {
   canRedo: () => boolean;
   clearHistory: () => void;
   setLoading: (loading: boolean) => void;
-  togglePremium: () => void;
+  setSearchQuery: (query: string) => void;
 }
 
 const MAX_HISTORY = 50;
 
 export const useJsonStore = create<JsonStore>((set, get) => ({
   jsonData: {},
-  jsonString: '{\n  "hello": "world",\n  "example": {\n    "array": [1, 2, 3],\n    "boolean": true,\n    "null": null\n  }\n}',
+  jsonString: `{
+  "hello": "world",
+  "example": {
+    "array": [1, 2, 3],
+    "boolean": true,
+    "null": null
+  }
+}`,
   activeMode: 'code',
-  theme: 'light',
+  theme: 'dark',
   isValid: true,
   errors: [],
   history: [],
   currentHistoryIndex: -1,
   isLoading: false,
-  showAds: true,
-  isPremium: false,
+  searchQuery: '',
+
+  setSearchQuery: (query: string) => set({ searchQuery: query }),
 
   setJsonData: (data: any, action = 'update') => {
     const jsonString = formatJson(data);
@@ -172,6 +180,5 @@ export const useJsonStore = create<JsonStore>((set, get) => ({
   },
 
   clearHistory: () => set({ history: [], currentHistoryIndex: -1 }),
-  setLoading: (isLoading) => set({ isLoading }),
-  togglePremium: () => set((state) => ({ isPremium: !state.isPremium, showAds: state.isPremium }))
+  setLoading: (isLoading) => set({ isLoading })
 }));

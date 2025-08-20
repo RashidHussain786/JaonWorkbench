@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { useJsonStore } from '../store/jsonStore';
+import * as monaco from 'monaco-editor';
 
 export const CodeEditor: React.FC = () => {
-  const { jsonString, setJsonString, theme, errors, isValid } = useJsonStore();
+  const { jsonString, setJsonString, theme, errors, isValid, searchQuery } = useJsonStore();
   const editorRef = useRef<any>(null);
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
@@ -61,6 +62,29 @@ export const CodeEditor: React.FC = () => {
       }
     }
   }, [theme]);
+
+  const decorationIdsRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    if (editorRef.current) {
+      const model = editorRef.current.getModel();
+      if (model) {
+        if (searchQuery) {
+          const matches = model.findMatches(searchQuery, true, false, true, null, true);
+          const newDecorations = matches.map((match: monaco.editor.FindMatch) => ({
+            range: match.range,
+            options: { inlineClassName: 'search-highlight' }
+          }));
+          decorationIdsRef.current = editorRef.current.deltaDecorations(decorationIdsRef.current, newDecorations);
+          if (matches.length > 0) {
+            editorRef.current.revealRange(matches[0].range);
+          }
+        } else {
+          decorationIdsRef.current = editorRef.current.deltaDecorations(decorationIdsRef.current, []);
+        }
+      }
+    }
+  }, [searchQuery]);
 
   // Add error markers
   useEffect(() => {

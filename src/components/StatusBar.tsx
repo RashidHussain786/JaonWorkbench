@@ -3,7 +3,7 @@ import { CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { useJsonStore } from '../store/jsonStore';
 
 export const StatusBar: React.FC = () => {
-  const { isValid, errors, jsonData, showAds, isPremium } = useJsonStore();
+  const { isValid, errors, jsonData } = useJsonStore();
 
   const getStatus = () => {
     if (isValid) {
@@ -60,13 +60,7 @@ export const StatusBar: React.FC = () => {
             <span>Processed locally</span>
           </div>
 
-          {/* Ad Space - Bottom Banner */}
-          {showAds && !isPremium && (
-            <div className="bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 
-                          rounded px-3 py-1 text-xs text-gray-500 dark:text-gray-400">
-              <span>Ad Space • 728x90</span>
-            </div>
-          )}
+          
         </div>
       </div>
     </div>

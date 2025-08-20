@@ -1,5 +1,5 @@
 import React from 'react';
-import * as JSONTreeModule from 'react-json-tree';
+import { JSONTree } from 'react-json-tree';
 import { useJsonStore } from '../store/jsonStore';
 
 const lightTheme = {
@@ -67,7 +67,7 @@ export const TreeView: React.FC = () => {
   return (
     <div className="h-full bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 overflow-auto">
       <div className="p-4">
-        <JSONTreeModule.default
+        <JSONTree
           data={jsonData}
           theme={theme === 'dark' ? darkTheme : lightTheme}
           invertTheme={false}
