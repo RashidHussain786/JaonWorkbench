@@ -1,9 +1,9 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
-import { useJsonStore } from '../store/jsonStore';
+import { useTheme } from '../../theme/hooks/useTheme';
 
 export const Header: React.FC = () => {
-  const { theme, setTheme } = useJsonStore();
+  const { theme, setTheme } = useTheme();
 
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3">

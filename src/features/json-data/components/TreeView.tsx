@@ -1,6 +1,7 @@
 import React from 'react';
 import { JSONTree } from 'react-json-tree';
-import { useJsonStore } from '../store/jsonStore';
+import { useJsonData } from '../hooks/useJsonData';
+import { useTheme } from '../../theme/hooks/useTheme';
 
 const lightTheme = {
   scheme: 'light',
@@ -45,11 +46,10 @@ const darkTheme = {
 };
 
 export const TreeView: React.FC = () => {
-  const { jsonData, theme, setJsonData, isValid } = useJsonStore();
+  const { jsonData, isValid } = useJsonData();
+  const { theme } = useTheme();
 
-  const handleValueChange = (newValue: any) => {
-    setJsonData(newValue, 'tree-edit');
-  };
+
 
   if (!isValid) {
     return (
@@ -71,13 +71,12 @@ export const TreeView: React.FC = () => {
           data={jsonData}
           theme={theme === 'dark' ? darkTheme : lightTheme}
           invertTheme={false}
-          shouldExpandNode={(keyPath, data, level) => level < 2}
           sortObjectKeys={false}
           hideRoot={false}
           getItemString={(type, data, itemType, itemString, keyPath) => {
-            const itemsCount = Array.isArray(data) ? data.length : 
-                             (data && typeof data === 'object') ? Object.keys(data).length : 0;
-            
+            const itemsCount = Array.isArray(data) ? data.length :
+              (data && typeof data === 'object') ? Object.keys(data).length : 0;
+
             return (
               <span className="text-gray-500 dark:text-gray-400 text-sm ml-2">
                 {type === 'Object' && `{${itemsCount} ${itemsCount === 1 ? 'key' : 'keys'}}`}

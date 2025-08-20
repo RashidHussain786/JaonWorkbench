@@ -1,10 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
-import { useJsonStore } from '../store/jsonStore';
+import { useJsonData } from '../hooks/useJsonData';
+import { useTheme } from '../../theme/hooks/useTheme';
+import { useJsonStore } from '../../../store/jsonStore';
 import * as monaco from 'monaco-editor';
 
 export const CodeEditor: React.FC = () => {
-  const { jsonString, setJsonString, theme, errors, isValid, searchQuery } = useJsonStore();
+  const { jsonString, setJsonString, errors, isValid } = useJsonData();
+  const { theme } = useTheme();
+  const { searchQuery } = useJsonStore();
   const editorRef = useRef<any>(null);
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
@@ -69,18 +73,21 @@ export const CodeEditor: React.FC = () => {
     if (editorRef.current) {
       const model = editorRef.current.getModel();
       if (model) {
+
+        // Clear all previous decorations
+        decorationIdsRef.current = editorRef.current.deltaDecorations(decorationIdsRef.current, []);
+
         if (searchQuery) {
           const matches = model.findMatches(searchQuery, true, false, true, null, true);
           const newDecorations = matches.map((match: monaco.editor.FindMatch) => ({
             range: match.range,
-            options: { inlineClassName: 'search-highlight' }
+            options: { className: 'search-highlight-background', inlineStyle: 'color: black;' }
           }));
-          decorationIdsRef.current = editorRef.current.deltaDecorations(decorationIdsRef.current, newDecorations);
+          decorationIdsRef.current = editorRef.current.deltaDecorations([], newDecorations);
+          console.log('New decorations applied:', decorationIdsRef.current);
           if (matches.length > 0) {
             editorRef.current.revealRange(matches[0].range);
           }
-        } else {
-          decorationIdsRef.current = editorRef.current.deltaDecorations(decorationIdsRef.current, []);
         }
       }
     }
@@ -129,7 +136,7 @@ export const CodeEditor: React.FC = () => {
           insertSpaces: true,
         }}
       />
-      
+
       {/* Error Display */}
       {!isValid && errors.length > 0 && (
         <div className="bg-red-50 dark:bg-red-900/20 border-t border-red-200 dark:border-red-800 p-3">

@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { useJsonStore } from '../store/jsonStore';
+import { useJsonData } from '../hooks/useJsonData';
 
 export const TableView: React.FC = () => {
-  const { jsonData, isValid } = useJsonStore();
+  const { jsonData, isValid } = useJsonData();
 
   const tableData = useMemo(() => {
     if (!isValid || !jsonData) return null;

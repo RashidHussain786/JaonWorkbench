@@ -1,10 +1,10 @@
 import React from 'react';
 import { Info, Zap, X } from 'lucide-react';
-import { useJsonStore } from '../store/jsonStore';
-import { getJsonStats } from '../utils/jsonHelpers';
+import { useJsonData } from '../../json-data/hooks/useJsonData';
+import { getJsonStats } from '../../../utils/jsonHelpers';
 
 export const Sidebar: React.FC = () => {
-  const { jsonData, isValid } = useJsonStore();
+  const { jsonData, isValid } = useJsonData();
   
   const stats = isValid ? getJsonStats(jsonData) : null;
 

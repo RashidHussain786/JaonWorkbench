@@ -1,7 +1,7 @@
 import React from 'react';
 import { GitMerge, FileCode, Table } from 'lucide-react';
-import { useJsonStore } from '../store/jsonStore';
-import { ViewMode } from '../types';
+import { useJsonStore } from '../../../store/jsonStore';
+import { ViewMode } from '../../../../common/types';
 
 export const ModeSelector: React.FC = () => {
   const { activeMode, setActiveMode } = useJsonStore();

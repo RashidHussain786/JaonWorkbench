@@ -1,19 +1,19 @@
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { Header } from './components/Header';
-import { ModeSelector } from './components/ModeSelector';
-import { SearchBar } from './components/SearchBar';
-import { ActionButtons } from './components/ActionButtons';
-import { CodeEditor } from './components/CodeEditor';
-import { TreeView } from './components/TreeView';
-import { TableView } from './components/TableView';
-import { Sidebar } from './components/Sidebar';
-import { StatusBar } from './components/StatusBar';
-import { FileDropzone } from './components/FileDropzone';
+import { Header, Sidebar, StatusBar, FileDropzone, ModeSelector } from './features/layout/components/index';
+import { SearchBar } from './features/search/components/index';
+import { ActionButtons } from './features/file-operations/components/index';
+import { CodeEditor, TreeView, TableView } from './features/json-data/components/index';
 import { useJsonStore } from './store/jsonStore';
+import { JsonDataContext } from './features/json-data/context/JsonDataContext';
+import { useJsonData } from './features/json-data/hooks/useJsonData';
+import { ThemeContext } from './features/theme/context/ThemeContext';
+import { useTheme } from './features/theme/hooks/useTheme';
 
 function App() {
-  const { activeMode, theme, validateAndUpdate, jsonString } = useJsonStore();
+  const { activeMode } = useJsonStore();
+  const { validateAndUpdate, jsonString, undo, redo, formatJson } = useJsonData();
+  const { theme } = useTheme();
 
   // Initialize with sample data and apply theme
   useEffect(() => {
@@ -35,17 +35,17 @@ function App() {
           case 'z':
             if (!e.shiftKey) {
               e.preventDefault();
-              useJsonStore.getState().undo();
+              undo();
             }
             break;
           case 'y':
             e.preventDefault();
-            useJsonStore.getState().redo();
+            redo();
             break;
           case 'f':
             if (e.shiftKey) {
               e.preventDefault();
-              useJsonStore.getState().formatJson();
+              formatJson();
             }
             break;
         }
@@ -54,7 +54,7 @@ function App() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [undo, redo, formatJson]);
 
   const renderEditor = () => {
     switch (activeMode) {
@@ -69,49 +69,53 @@ function App() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      <Header />
+    <JsonDataContext.Provider value={useJsonData()}>
+      <ThemeContext.Provider value={useTheme()}>
+        <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+          <Header />
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col p-4">
-          {/* Mode Selector and Ad Space */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <ModeSelector />
-              <ActionButtons />
-              <SearchBar />
+          <div className="flex-1 flex overflow-hidden">
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col p-4">
+              {/* Mode Selector and Ad Space */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  <ModeSelector />
+                  <ActionButtons />
+                  <SearchBar />
+                </div>
+              </div>
+
+              {/* Editor */}
+              <div className="flex-1 min-h-0">
+                {renderEditor()}
+              </div>
             </div>
+
+            {/* Sidebar */}
+            <Sidebar />
           </div>
 
-          {/* Editor */}
-          <div className="flex-1 min-h-0">
-            {renderEditor()}
-          </div>
+          {/* Status Bar */}
+          <StatusBar />
+
+          {/* File Dropzone */}
+          <FileDropzone />
+
+          {/* Toast Notifications */}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: theme === 'dark' ? '#374151' : '#fff',
+                color: theme === 'dark' ? '#fff' : '#000',
+              },
+            }}
+          />
         </div>
-
-        {/* Sidebar */}
-        <Sidebar />
-      </div>
-
-      {/* Status Bar */}
-      <StatusBar />
-
-      {/* File Dropzone */}
-      <FileDropzone />
-
-      {/* Toast Notifications */}
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: theme === 'dark' ? '#374151' : '#fff',
-            color: theme === 'dark' ? '#fff' : '#000',
-          },
-        }}
-      />
-    </div>
+      </ThemeContext.Provider>
+    </JsonDataContext.Provider>
   );
 }
 

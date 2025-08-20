@@ -1,5 +1,5 @@
 import { saveAs } from 'file-saver';
-import { FileImportResult } from '../types';
+import { FileImportResult } from '../../../common/types';
 
 export async function importFromFile(file: File): Promise<FileImportResult> {
   try {
@@ -82,11 +82,11 @@ function jsonToCsv(data: any): string {
   if (!Array.isArray(data)) {
     throw new Error('CSV export requires JSON to be an array of objects');
   }
-  
+
   if (data.length === 0) {
     return '';
   }
-  
+
   // Get all unique keys
   const keys = new Set<string>();
   data.forEach(item => {
@@ -94,7 +94,7 @@ function jsonToCsv(data: any): string {
       Object.keys(item).forEach(key => keys.add(key));
     }
   });
-  
+
   const headers = Array.from(keys);
   const rows = data.map(item => {
     return headers.map(header => {
@@ -104,13 +104,13 @@ function jsonToCsv(data: any): string {
       return String(value).replace(/"/g, '""'); // Escape quotes
     });
   });
-  
+
   // Format as CSV
   const csvRows = [
     headers.map(h => `"${h}"`).join(','),
     ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
   ];
-  
+
   return csvRows.join('\n');
 }
 
@@ -119,21 +119,21 @@ export function csvToJson(csvString: string): any[] {
   if (lines.length < 2) {
     throw new Error('CSV must have at least a header row and one data row');
   }
-  
+
   const headers = parseCSVRow(lines[0]);
   const data = [];
-  
+
   for (let i = 1; i < lines.length; i++) {
     const values = parseCSVRow(lines[i]);
     const obj: any = {};
-    
+
     headers.forEach((header, index) => {
       obj[header] = values[index] || '';
     });
-    
+
     data.push(obj);
   }
-  
+
   return data;
 }
 
@@ -141,11 +141,11 @@ function parseCSVRow(row: string): string[] {
   const result = [];
   let current = '';
   let inQuotes = false;
-  
+
   for (let i = 0; i < row.length; i++) {
     const char = row[i];
     const nextChar = row[i + 1];
-    
+
     if (char === '"') {
       if (inQuotes && nextChar === '"') {
         // Escaped quote
@@ -163,7 +163,7 @@ function parseCSVRow(row: string): string[] {
       current += char;
     }
   }
-  
+
   result.push(current);
   return result;
 }

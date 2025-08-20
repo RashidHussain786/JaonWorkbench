@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.search-highlight {
-  background-color: #FFD700;
-  color: #333333 !important; 
+.search-highlight-background {
+  background-color: #f44747;
 }

@@ -1,59 +1,9 @@
 import React from 'react';
 import { FileDown, FileUp, Copy, Clipboard, Undo, Redo } from 'lucide-react';
-import { useJsonStore } from '../store/jsonStore';
-import { exportToFile, copyToClipboard, readFromClipboard } from '../utils/fileHelpers';
-import toast from 'react-hot-toast';
+import { useFileOperations } from '../hooks/useFileOperations';
 
 export const ActionButtons: React.FC = () => {
-  const {
-    jsonData,
-    jsonString,
-    formatJson,
-    minifyJson,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-    setJsonString
-  } = useJsonStore();
-
-  const handleExport = () => {
-    try {
-      exportToFile(jsonData);
-      toast.success('JSON exported successfully!');
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Export failed');
-    }
-  };
-
-  const handleCopy = async () => {
-    const success = await copyToClipboard(jsonString);
-    if (success) {
-      toast.success('JSON copied to clipboard!');
-    } else {
-      toast.error('Failed to copy to clipboard');
-    }
-  };
-
-  const handlePaste = async () => {
-    const text = await readFromClipboard();
-    if (text) {
-      setJsonString(text, 'paste');
-      toast.success('JSON pasted from clipboard!');
-    } else {
-      toast.error('Failed to read from clipboard');
-    }
-  };
-
-  const handleFormat = () => {
-    formatJson();
-    toast.success('JSON formatted!');
-  };
-
-  const handleMinify = () => {
-    minifyJson();
-    toast.success('JSON minified!');
-  };
+  const { handleCopy, handlePaste, handleFormat, handleMinify, undo, redo, canUndo, canRedo } = useFileOperations();
 
   return (
     <div className="flex items-center space-x-2">

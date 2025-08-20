@@ -1,9 +1,9 @@
 import React from 'react';
 import { CheckCircle, AlertCircle, Clock } from 'lucide-react';
-import { useJsonStore } from '../store/jsonStore';
+import { useJsonData } from '../../json-data/hooks/useJsonData';
 
 export const StatusBar: React.FC = () => {
-  const { isValid, errors, jsonData } = useJsonStore();
+  const { isValid, errors, jsonData } = useJsonData();
 
   const getStatus = () => {
     if (isValid) {
