@@ -18,7 +18,7 @@ export const ModeSelector: React.FC = () => {
         <button
           key={id}
           onClick={() => setActiveMode(id)}
-          className={`p-2 rounded-md transition-all duration-200 ${activeMode === id
+          className={`px-2 py-1 rounded-md transition-all duration-200 ${activeMode === id
               ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
             }`}
