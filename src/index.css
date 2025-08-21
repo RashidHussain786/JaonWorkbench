@@ -5,3 +5,17 @@
 .search-highlight-background {
   background-color: #f44747;
 }
+
+.search-highlight-original {
+  background-color: #86863f;
+  color: black !important;
+}
+
+.search-highlight-modified {
+  background-color: #3f7486; 
+  color: white !important;
+}
+
+.current-search-match {
+  border: 2px solid red;
+}
