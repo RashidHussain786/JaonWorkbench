@@ -3,7 +3,8 @@ import { Toaster } from 'react-hot-toast';
 import { Header, Sidebar, StatusBar, FileDropzone, ModeSelector, InputTypeSelector, CompareButton } from './features/layout/components/index';
 import { SearchBar } from './features/search/components/index';
 import { ActionButtons } from './features/file-operations/components/index';
-import { CodeEditor, TreeView, TableView, CompareEditorLayout } from './features/json-data/components/index'; CompareEditorLayout
+import { CodeEditor, TreeView, TableView, CompareEditorLayout } from './features/json-data/components/index';
+import { FolderCompareLayout } from './features/folder-compare/components';
 import { useJsonStore } from './store/jsonStore';
 import { JsonDataContext } from './features/json-data/context/JsonDataContext';
 import { useJsonData } from './features/json-data/hooks/useJsonData';
@@ -12,7 +13,7 @@ import { useTheme } from './features/theme/hooks/useTheme';
 import { X } from 'lucide-react';
 
 function App() {
-  const { activeMode, isComparing, leftContent, rightContent, setRightContent, setIsComparing, setCompareMode } = useJsonStore();
+  const { activeMode, isComparing, leftContent, rightContent, setRightContent, setIsComparing, setCompareMode, compareMode, setLeftFolderFiles, setRightFolderFiles, setActiveCompareFile } = useJsonStore();
   const { validateAndUpdate, jsonString, undo, redo, formatJson, setJsonString } = useJsonData();
 
   const { theme } = useTheme();
@@ -70,9 +71,28 @@ function App() {
     }
   };
 
+  const renderMainContent = () => {
+    if (isComparing) {
+      switch (compareMode) {
+        case 'folder':
+          return <FolderCompareLayout />;
+        case 'file':
+        case 'json':
+        default:
+          return <CompareEditorLayout originalContent={leftContent} modifiedContent={rightContent} />;
+      }
+    } else {
+      return renderEditor();
+    }
+  };
+
   const handleExitCompareMode = () => {
     setIsComparing(false);
     setCompareMode(null);
+    setLeftFolderFiles([]);
+    setRightFolderFiles([]);
+    setActiveCompareFile(null);
+
     // If rightContent has content, set it as the main jsonString
     if (rightContent) {
       setJsonString(rightContent); // Update main editor content
@@ -113,11 +133,7 @@ function App() {
 
               {/* Editor */}
               <div className="flex-1 min-h-0">
-                {isComparing ? (
-                  <CompareEditorLayout originalContent={leftContent} modifiedContent={rightContent} />
-                ) : (
-                  renderEditor()
-                )}
+                {renderMainContent()}
               </div>
             </div>
 

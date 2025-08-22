@@ -7,7 +7,11 @@ export default defineConfig({
   plugins: [
     react(),
     (monacoEditorPlugin as any).default({
-      languageWorkers: ['json', 'editorWorker'],
+      languageWorkers: ['json', 'css', 'html', 'typescript', 'editorWorkerService'],
+      customWorkers: [{
+        label: 'editorWorker',
+        entry: 'monaco-editor/esm/vs/editor/editor.worker'
+      }]
     }),
   ],
   optimizeDeps: {
