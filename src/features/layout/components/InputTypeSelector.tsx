@@ -16,7 +16,7 @@ export const InputTypeSelector: React.FC = () => {
   };
 
   return (
-    <div className="flex space-x-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+    <div className="flex space-x-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg input-type-selector" data-tourid="input-type-selector">
       <button
         onClick={() => handleTypeChange('json')}
         className={`${commonClasses} ${inputType === 'json' ? activeClasses : inactiveClasses}`}

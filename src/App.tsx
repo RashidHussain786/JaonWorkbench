@@ -14,6 +14,7 @@ import { useJsonData } from './features/json-data/hooks/useJsonData';
 import { ThemeContext } from './features/theme/context/ThemeContext';
 import { useTheme } from './features/theme/hooks/useTheme';
 import { X } from 'lucide-react';
+import FeatureTour from './components/FeatureTour';
 
 function App() {
   const { activeMode } = useMainEditorStore();
@@ -100,6 +101,7 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <FeatureTour />
       <JsonDataContext.Provider value={useJsonData()}>
         <ThemeContext.Provider value={useTheme()}>
           <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">

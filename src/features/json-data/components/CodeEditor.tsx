@@ -91,7 +91,7 @@ export const CodeEditor: React.FC = () => {
   }, [errors, isValid, inputType]);
 
   return (
-    <div className="h-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+    <div className="h-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden monaco-editor-container" data-tourid="monaco-editor-container">
       <Editor
         height="100%"
         defaultLanguage={inputType === 'base64' ? 'plaintext' : 'json'}

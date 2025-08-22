@@ -13,7 +13,7 @@ export const ModeSelector: React.FC = () => {
   ];
 
   return (
-    <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 space-x-1">
+    <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 space-x-1 mode-selector" data-tourid="mode-selector">
       {modes.map(({ id, icon }) => (
         <button
           key={id}

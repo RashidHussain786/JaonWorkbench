@@ -33,7 +33,7 @@ export const StatusBar: React.FC = () => {
     : (jsonData && typeof jsonData === 'object' ? Object.keys(jsonData).length : 0);
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-2">
+    <div className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-2 status-bar" data-tourid="status-bar">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           {/* Validation Status */}

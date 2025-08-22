@@ -17,8 +17,9 @@ export const CompareButton: React.FC = () => {
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"
+          className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors compare-button"
           title="Compare JSON/Files/Folders"
+          data-tourid="compare-button"
         >
           <GitCompare size={18} className="text-gray-700 dark:text-gray-300" />
         </button>

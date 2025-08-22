@@ -36,13 +36,13 @@ export const Header: React.FC = () => {
     <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white json-workbench-title" data-tourid="json-workbench-title">
             JSON Workbench
           </h1>
         </div>
 
         <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 pr-4">
+          <div className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 pr-4 dev-greeting" data-tourid="dev-greeting">
             <Terminal size={18} />
             <span className="text-sm font-medium">{currentGreeting}</span>
           </div>

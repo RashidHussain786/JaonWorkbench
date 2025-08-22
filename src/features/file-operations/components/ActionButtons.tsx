@@ -1,16 +1,16 @@
 import React from 'react';
-import { FileDown, FileUp, Copy, Clipboard, Undo, Redo, Key } from 'lucide-react';
+import { FileDown, FileUp, Copy, Clipboard, Undo, Redo, Key, Download } from 'lucide-react';
 import { useFileOperations } from '../hooks/useFileOperations';
 import { useMainEditorStore } from '../../../store/mainEditorStore';
 
 export const ActionButtons: React.FC = () => {
-  const { handleCopy, handlePaste, handleFormat, handleMinify, undo, redo, canUndo, canRedo, handleDecodeBase64 } = useFileOperations();
+  const { handleCopy, handlePaste, handleFormat, handleMinify, undo, redo, canUndo, canRedo, handleDecodeBase64, handleExport } = useFileOperations();
   const { inputType } = useMainEditorStore();
 
   return (
     <div className="flex items-center space-x-2">
       {/* File Operations */}
-      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 quick-actions-buttons" data-tourid="quick-actions-buttons">
         <button
           onClick={handleDecodeBase64}
           disabled={inputType !== 'base64'}
@@ -33,10 +33,18 @@ export const ActionButtons: React.FC = () => {
         >
           <FileDown size={18} className="text-gray-700 dark:text-gray-300" />
         </button>
+        <button
+          onClick={handleExport}
+          className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors export-button"
+          title="Export JSON to File"
+          data-tourid="export-button"
+        >
+          <Download size={18} className="text-gray-700 dark:text-gray-300" />
+        </button>
       </div>
 
       {/* Clipboard Operations */}
-      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 clipboard-operations" data-tourid="clipboard-operations">
         <button
           onClick={handleCopy}
           className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors"

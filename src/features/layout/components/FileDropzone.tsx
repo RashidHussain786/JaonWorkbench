@@ -46,9 +46,10 @@ export const FileDropzone: React.FC = () => {
       {...getRootProps()}
       className={`
         fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm
-        transition-all duration-300 pointer-events-none opacity-0
+        transition-all duration-300 pointer-events-none opacity-0 file-dropzone
         ${isDragActive ? 'opacity-100 pointer-events-auto' : ''}
       `}
+      data-tourid="file-dropzone"
     >
       <input {...getInputProps()} />
       <div className={`
