@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useCompareStore } from '../../../store/compareStore';
 import { Search, ChevronUp, ChevronDown, Copy, Clipboard, FileUp, FileDown } from 'lucide-react';
 import { useTheme } from '../../theme/hooks/useTheme';
 import { useCompareSearch } from '../hooks/useCompareSearch';
@@ -9,13 +9,13 @@ import { toast } from 'react-hot-toast';
 interface CompareEditorLayoutProps {
   originalContent: string;
   modifiedContent: string;
-  showControls?: boolean; // New prop to control visibility of the toolbar
+  showControls?: boolean;
 }
 
 export const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
   originalContent,
   modifiedContent,
-  showControls = true // Default to true to maintain existing behavior
+  showControls = true
 }) => {
   const diffEditorRef = useRef<HTMLDivElement>(null);
   const diffEditorInstanceRef = useRef<monaco.editor.IStandaloneDiffEditor | null>(null);
@@ -28,7 +28,7 @@ export const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
     setLeftSearchQuery,
     rightSearchQuery,
     setRightSearchQuery
-  } = useJsonStore();
+  } = useCompareStore();
   const { theme } = useTheme();
   const {
     handleSearch,
@@ -51,7 +51,7 @@ export const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
         automaticLayout: true,
         theme: theme === 'dark' ? 'vs-dark' : 'vs-light',
         readOnly: false,
-        originalEditable: true, // Allow editing in the original editor
+        originalEditable: true,
       });
 
       diffEditorInstanceRef.current.setModel({

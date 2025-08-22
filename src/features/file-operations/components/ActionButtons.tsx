@@ -1,11 +1,11 @@
 import React from 'react';
 import { FileDown, FileUp, Copy, Clipboard, Undo, Redo, Key } from 'lucide-react';
 import { useFileOperations } from '../hooks/useFileOperations';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useMainEditorStore } from '../../../store/mainEditorStore';
 
 export const ActionButtons: React.FC = () => {
   const { handleCopy, handlePaste, handleFormat, handleMinify, undo, redo, canUndo, canRedo, handleDecodeBase64 } = useFileOperations();
-  const { inputType } = useJsonStore();
+  const { inputType } = useMainEditorStore();
 
   return (
     <div className="flex items-center space-x-2">

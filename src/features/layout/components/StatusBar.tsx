@@ -1,11 +1,11 @@
 import React from 'react';
 import { CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useMainEditorStore } from '../../../store/mainEditorStore';
 
 export const StatusBar: React.FC = () => {
   const { isValid, errors, jsonData } = useJsonData();
-  const { inputType } = useJsonStore();
+  const { inputType } = useMainEditorStore();
 
   const getStatus = () => {
     if (isValid) {

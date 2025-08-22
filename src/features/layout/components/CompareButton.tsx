@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { GitCompare } from 'lucide-react';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useCompareStore } from '../../../store/compareStore';
 
 export const CompareButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { setIsComparing, setCompareMode } = useJsonStore();
+  const { setIsComparing, setCompareMode } = useCompareStore();
 
   const handleCompareOption = (mode: 'file' | 'json' | 'folder') => {
     setCompareMode(mode);

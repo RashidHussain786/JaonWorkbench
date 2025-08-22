@@ -118,4 +118,4 @@ export const useCompareSearch = () => {
     setCurrentOriginalMatchIndex,
     setCurrentModifiedMatchIndex,
   };
-}; // Added a comment to force re-compilation
+};

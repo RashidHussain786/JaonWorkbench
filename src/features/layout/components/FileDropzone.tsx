@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FileJson } from 'lucide-react';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useMainEditorStore } from '../../../store/mainEditorStore';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
 import { importFromFile } from '../../file-operations/utils/fileHelpers';
 import toast from 'react-hot-toast';
 
 export const FileDropzone: React.FC = () => {
   const { setJsonData } = useJsonData();
-  const { setLoading } = useJsonStore();
+  const { setLoading } = useMainEditorStore();
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;

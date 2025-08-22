@@ -1,10 +1,10 @@
 import React from 'react';
 import { GitMerge, FileCode, Table } from 'lucide-react';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useMainEditorStore } from '../../../store/mainEditorStore';
 import { ViewMode } from '../../../common/types';
 
 export const ModeSelector: React.FC = () => {
-  const { activeMode, setActiveMode } = useJsonStore();
+  const { activeMode, setActiveMode } = useMainEditorStore();
 
   const modes: Array<{ id: ViewMode; icon: React.ReactNode }> = [
     { id: 'tree', icon: <GitMerge size={18} /> },

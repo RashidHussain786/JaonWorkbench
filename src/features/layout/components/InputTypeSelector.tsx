@@ -1,10 +1,10 @@
 import React from 'react';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useMainEditorStore } from '../../../store/mainEditorStore';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
 
 export const InputTypeSelector: React.FC = () => {
-  const { inputType, setInputType, jsonString } = useJsonStore();
-  const { validateAndUpdate } = useJsonData();
+  const { inputType, setInputType } = useMainEditorStore();
+  const { jsonString, validateAndUpdate } = useJsonData();
 
   const commonClasses = "px-3 py-1 rounded-md text-sm font-medium transition-colors";
   const activeClasses = "bg-blue-500 text-white shadow-md";

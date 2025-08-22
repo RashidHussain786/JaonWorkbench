@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useFolderCompareStore } from '../../../store/folderCompareStore';
 import { CompareEditorLayout } from '../../json-data/components';
 import { useFolderOperations } from '../hooks/useFolderOperations';
 import { FolderPlus } from 'lucide-react';
 
-// The Tab component is now simpler, it doesn't need a "missing" state
 const Tab: React.FC<{ path: string; isActive: boolean; onClick: () => void; }> = ({ path, isActive, onClick }) => {
   const baseClasses = 'px-3 py-2 text-sm whitespace-nowrap cursor-pointer transition-colors duration-150';
   const activeClasses = 'border-b-2 border-blue-500 text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-gray-800';
@@ -21,18 +20,14 @@ const Tab: React.FC<{ path: string; isActive: boolean; onClick: () => void; }> =
   );
 };
 
-// The TabPanel now only knows about its own files
 const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
-  const { leftFolderFiles, rightFolderFiles, activeCompareFile, setActiveCompareFile } = useJsonStore();
+  const { leftFolderFiles, rightFolderFiles, activeCompareFile, setActiveCompareFile } = useFolderCompareStore();
   const { selectLeftFolder, selectRightFolder } = useFolderOperations();
 
   const files = isLeftPanel ? leftFolderFiles : rightFolderFiles;
   const selectFolder = isLeftPanel ? selectLeftFolder : selectRightFolder;
 
-  // Scroll active tab into view
   React.useEffect(() => {
-    // This functionality is removed as per user request to remove custom horizontal scrolling
-    // If default browser scroll-into-view is desired, it would need to be re-added here
   }, [activeCompareFile, files]);
 
   if (files.length === 0) {
@@ -67,7 +62,7 @@ const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
 };
 
 export const FolderCompareLayout: React.FC = () => {
-  const { leftFolderFiles, rightFolderFiles, activeCompareFile } = useJsonStore();
+  const { leftFolderFiles, rightFolderFiles, activeCompareFile } = useFolderCompareStore();
 
   const activeFileContent = useMemo(() => {
     if (!activeCompareFile) {

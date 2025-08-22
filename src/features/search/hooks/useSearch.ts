@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useMainEditorStore } from '../../../store/mainEditorStore';
 
 export const useSearch = () => {
-  const { searchQuery, setSearchQuery } = useJsonStore();
+  const { searchQuery, setSearchQuery } = useMainEditorStore();
 
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);

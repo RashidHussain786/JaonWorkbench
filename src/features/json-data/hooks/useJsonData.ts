@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { JsonError, HistoryState } from '../../../common/types';
 import { validateJson, formatJson, isBase64 } from '../../../utils/jsonHelpers';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useMainEditorStore } from '../../../store/mainEditorStore';
 
 interface JsonDataStoreState {
   jsonData: any;
@@ -46,7 +46,6 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
     const jsonString = JSON.stringify(data, null, 2);
     const state = get();
 
-    // Add to history
     const newHistoryItem: HistoryState = {
       data: state.jsonData,
       jsonString: state.jsonString,
@@ -72,7 +71,7 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
   },
 
   setJsonString: (str: string, action = 'edit') => {
-    const { inputType } = useJsonStore.getState(); // Get current inputType
+    const { inputType } = useMainEditorStore.getState();
     const state = get();
 
     let isValid = true;
@@ -84,9 +83,8 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
         isValid = false;
         errors = [{ message: 'Invalid Base64 string', type: 'syntax' }];
       }
-      // No parsing for base64, jsonData remains empty or previous
-      parsedData = state.jsonData; // Keep previous valid JSON data if any
-    } else { // inputType === 'json'
+      parsedData = state.jsonData;
+    } else {
       const validation = validateJson(str);
       isValid = validation.isValid;
       errors = validation.errors || [];
@@ -94,10 +92,9 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
     }
 
     if (isValid) {
-      // Add to history only if valid
       const newHistoryItem: HistoryState = {
-        data: state.jsonData, // Store previous valid JSON data
-        jsonString: state.jsonString, // Store previous valid jsonString
+        data: state.jsonData,
+        jsonString: state.jsonString,
         timestamp: Date.now(),
         action
       };
@@ -127,13 +124,13 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
   },
 
   validateAndUpdate: (content: string) => {
-    const { inputType } = useJsonStore.getState(); // Get current inputType
+    const { inputType } = useMainEditorStore.getState();
 
     if (inputType === 'base64') {
       if (isBase64(content)) {
         set({
           jsonString: content,
-          jsonData: {}, // No parsed data for base64
+          jsonData: {},
           isValid: true,
           errors: []
         });
@@ -145,7 +142,7 @@ export const useJsonDataStore = create<JsonDataStoreState & JsonDataStoreActions
           errors: [{ message: 'Invalid Base64 string', type: 'syntax' }]
         });
       }
-    } else { // inputType === 'json'
+    } else {
       const validation = validateJson(content);
       set({
         jsonString: content,

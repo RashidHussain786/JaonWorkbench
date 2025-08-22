@@ -2,60 +2,25 @@ import React, { useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { useJsonData } from '../hooks/useJsonData';
 import { useTheme } from '../../theme/hooks/useTheme';
-import { useJsonStore } from '../../../store/jsonStore';
+import { useMainEditorStore } from '../../../store/mainEditorStore';
 import * as monaco from 'monaco-editor';
+import { defineMonacoThemes } from '../utils/monacoThemes';
+import { applyMonacoEditorShortcuts, getMonacoEditorOptions } from '../utils/monacoEditorUtils';
 
 export const CodeEditor: React.FC = () => {
   const { jsonString, setJsonString, errors, isValid } = useJsonData();
   const { theme } = useTheme();
-  const { searchQuery, inputType } = useJsonStore();
-  const editorRef = useRef<any>(null);
+  const { searchQuery, inputType } = useMainEditorStore();
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
 
-    // Custom JSON theme
-    monaco.editor.defineTheme('json-light', {
-      base: 'vs',
-      inherit: true,
-      rules: [
-        { token: 'string.key.json', foreground: '0451A5' },
-        { token: 'string.value.json', foreground: '0A7A37' },
-        { token: 'number.json', foreground: '164BCB' },
-        { token: 'keyword.json', foreground: 'AF00DB' },
-      ],
-      colors: {
-        'editor.background': '#FFFFFF',
-        'editor.foreground': '#000000',
-      }
-    });
+    defineMonacoThemes(monaco);
 
-    monaco.editor.defineTheme('json-dark', {
-      base: 'vs-dark',
-      inherit: true,
-      rules: [
-        { token: 'string.key.json', foreground: '9CDCFE' },
-        { token: 'string.value.json', foreground: 'CE9178' },
-        { token: 'number.json', foreground: 'B5CEA8' },
-        { token: 'keyword.json', foreground: 'C586C0' },
-      ],
-      colors: {
-        'editor.background': '#1E1E1E',
-        'editor.foreground': '#D4D4D4',
-      }
-    });
-
-    // Set custom theme
     monaco.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
 
-    // Add keyboard shortcuts
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-      // Save functionality would go here
-    });
-
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyF, () => {
-      editor.getAction('editor.action.formatDocument').run();
-    });
+    applyMonacoEditorShortcuts(editor, monaco);
   };
 
   useEffect(() => {
@@ -64,7 +29,6 @@ export const CodeEditor: React.FC = () => {
       if (monaco) {
         monaco.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
 
-        // Control JSON diagnostics based on inputType
         if (inputType === 'base64') {
           monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: false,
@@ -73,7 +37,7 @@ export const CodeEditor: React.FC = () => {
         } else {
           monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
-            schemas: [] // You might have actual schemas here
+            schemas: []
           });
         }
       }
@@ -87,7 +51,6 @@ export const CodeEditor: React.FC = () => {
       const model = editorRef.current.getModel();
       if (model) {
 
-        // Clear all previous decorations
         decorationIdsRef.current = editorRef.current.deltaDecorations(decorationIdsRef.current, []);
 
         if (searchQuery) {
@@ -106,15 +69,13 @@ export const CodeEditor: React.FC = () => {
     }
   }, [searchQuery]);
 
-  // Add error markers
   useEffect(() => {
     if (editorRef.current) {
       const monaco = (window as any).monaco;
       if (monaco) {
-        // Clear existing markers first
         monaco.editor.setModelMarkers(editorRef.current.getModel(), 'json', []);
 
-        if (!isValid && errors.length > 0 && inputType === 'json') { // Only show markers for JSON errors
+        if (!isValid && errors.length > 0 && inputType === 'json') {
           const markers = errors.map(error => ({
             startLineNumber: error.line || 1,
             startColumn: error.column || 1,
@@ -138,21 +99,7 @@ export const CodeEditor: React.FC = () => {
         onChange={(value) => setJsonString(value || '', 'edit')}
         onMount={handleEditorDidMount}
         theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
-        options={{
-          minimap: { enabled: true },
-          wordWrap: 'on',
-          lineNumbers: 'on',
-          folding: true,
-          bracketPairColorization: { enabled: true },
-          autoIndent: 'full',
-          formatOnPaste: true,
-          formatOnType: true,
-          scrollBeyondLastLine: false,
-          fontSize: 14,
-          fontFamily: 'Consolas, Monaco, "Courier New", monospace',
-          tabSize: 2,
-          insertSpaces: true,
-        }}
+        options={getMonacoEditorOptions() as any}
       />
 
       {/* Error Display */}

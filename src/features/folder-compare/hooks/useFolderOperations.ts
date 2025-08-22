@@ -1,10 +1,10 @@
-import { useJsonStore } from '../../../store/jsonStore';
+import { useFolderCompareStore } from '../../../store/folderCompareStore';
 import { FolderFile } from '../types';
 import { toast } from 'react-hot-toast';
 
 // This hook encapsulates the logic for selecting and reading folder contents.
 export const useFolderOperations = () => {
-  const { setLeftFolderFiles, setRightFolderFiles, setActiveCompareFile, leftFolderFiles, rightFolderFiles } = useJsonStore();
+  const { setLeftFolderFiles, setRightFolderFiles, setActiveCompareFile, leftFolderFiles, rightFolderFiles } = useFolderCompareStore();
 
   // Generic function to read files from a FileList, normalizing their paths
   const readFilesInDirectory = (files: FileList): Promise<FolderFile[]> => {
@@ -120,10 +120,7 @@ export const useFolderOperations = () => {
       setActiveCompareFile(files[0].path);
     }
 
-    // Check for root mismatch after both folders are loaded
-    // if (leftOriginalRoot && rightOriginalRoot && leftOriginalRoot !== rightOriginalRoot) {
-    //   toast.error(`Root folders are different: '${leftOriginalRoot}' vs '${rightOriginalRoot}'. File matching might be inconsistent if folder structures are not parallel.`, { duration: 8000 });
-    // }
+    
   };
 
   return { selectLeftFolder, selectRightFolder };
