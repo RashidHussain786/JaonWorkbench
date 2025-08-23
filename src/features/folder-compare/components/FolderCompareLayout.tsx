@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useFolderCompareStore } from '../../../store/folderCompareStore';
-import { CompareEditorLayout } from '../../json-data/components';
+import CompareEditorLayout from '../../json-data/components/CompareEditorLayout';
 import { useFolderOperations } from '../hooks/useFolderOperations';
 import { FolderPlus } from 'lucide-react';
 
@@ -61,7 +61,7 @@ const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
   );
 };
 
-export const FolderCompareLayout: React.FC = () => {
+const FolderCompareLayout: React.FC = () => {
   const { leftFolderFiles, rightFolderFiles, activeCompareFile } = useFolderCompareStore();
 
   const activeFileContent = useMemo(() => {
@@ -99,3 +99,5 @@ export const FolderCompareLayout: React.FC = () => {
     </div>
   );
 };
+
+export default FolderCompareLayout;

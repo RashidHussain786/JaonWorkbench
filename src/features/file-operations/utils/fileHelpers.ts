@@ -31,7 +31,7 @@ export async function importFromUrl(url: string): Promise<FileImportResult> {
   }
 }
 
-export function exportToFile(data: any, filename = 'data.json', format: 'json' | 'csv' = 'json') {
+export function exportToFile(data: unknown, filename = 'data.json', format: 'json' | 'csv' = 'json') {
   try {
     if (format === 'json') {
       const jsonString = JSON.stringify(data, null, 2);
@@ -51,7 +51,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
     return true;
-  } catch (error) {
+  } catch {
     // Fallback for older browsers
     try {
       const textArea = document.createElement('textarea');
@@ -78,7 +78,7 @@ export async function readFromClipboard(): Promise<string | null> {
   }
 }
 
-function jsonToCsv(data: any): string {
+function jsonToCsv(data: unknown): string {
   if (!Array.isArray(data)) {
     throw new Error('CSV export requires JSON to be an array of objects');
   }

@@ -1,17 +1,22 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+import monacoEditorPluginRaw from 'vite-plugin-monaco-editor';
 
-// https://vitejs.dev/config/
+const monacoEditorPlugin = (monacoEditorPluginRaw as any).default || monacoEditorPluginRaw;
+
 export default defineConfig({
+  base: '/',
   plugins: [
     react(),
-    (monacoEditorPlugin as any).default({
-      languageWorkers: ['json', 'css', 'html', 'typescript', 'editorWorkerService'],
-      customWorkers: [{
-        label: 'editorWorker',
-        entry: 'monaco-editor/esm/vs/editor/editor.worker'
-      }]
+    monacoEditorPlugin({
+      languageWorkers: [
+        'editorWorkerService',
+        'json',
+        'css',
+        'html',
+        'typescript',
+      ],
+      publicPath: "monacoeditorwork",
     }),
   ],
   optimizeDeps: {

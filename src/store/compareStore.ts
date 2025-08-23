@@ -10,6 +10,7 @@ interface CompareStore {
   rightMode: ViewMode;
   leftSearchQuery: string;
   rightSearchQuery: string;
+  originalJsonString: string;
 
   setIsComparing: (isComparing: boolean) => void;
   setCompareMode: (mode: 'file' | 'folder' | 'json' | null) => void;
@@ -19,6 +20,7 @@ interface CompareStore {
   setRightMode: (mode: ViewMode) => void;
   setLeftSearchQuery: (query: string) => void;
   setRightSearchQuery: (query: string) => void;
+  setOriginalJsonString: (str: string) => void;
 }
 
 export const useCompareStore = create<CompareStore>((set) => ({
@@ -30,6 +32,7 @@ export const useCompareStore = create<CompareStore>((set) => ({
   rightMode: 'code',
   leftSearchQuery: '',
   rightSearchQuery: '',
+  originalJsonString: '',
 
   setIsComparing: (isComparing) => set({ isComparing: isComparing }),
   setCompareMode: (mode) => set({ compareMode: mode }),
@@ -39,4 +42,5 @@ export const useCompareStore = create<CompareStore>((set) => ({
   setRightMode: (mode) => set({ rightMode: mode }),
   setLeftSearchQuery: (query) => set({ leftSearchQuery: query }),
   setRightSearchQuery: (query) => set({ rightSearchQuery: query }),
+  setOriginalJsonString: (str) => set({ originalJsonString: str }),
 }));

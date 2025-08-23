@@ -25,17 +25,15 @@ export const CodeEditor: React.FC = () => {
 
   useEffect(() => {
     if (editorRef.current) {
-      const monaco = (window as any).monaco;
-      if (monaco) {
-        monaco.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
-
+      const monacoInstance = window.monaco;
+      if (monacoInstance) {
         if (inputType === 'base64') {
-          monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+          monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: false,
             schemas: []
           });
         } else {
-          monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+          monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: []
           });
@@ -60,7 +58,7 @@ export const CodeEditor: React.FC = () => {
             options: { className: 'search-highlight-background', inlineStyle: 'color: black;' }
           }));
           decorationIdsRef.current = editorRef.current.deltaDecorations([], newDecorations);
-          console.log('New decorations applied:', decorationIdsRef.current);
+
           if (matches.length > 0) {
             editorRef.current.revealRange(matches[0].range);
           }
@@ -98,7 +96,7 @@ export const CodeEditor: React.FC = () => {
         value={jsonString}
         onChange={(value) => setJsonString(value || '', 'edit')}
         onMount={handleEditorDidMount}
-        theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
+        theme={theme === 'dark' ? 'json-dark' : 'json-light'}
         options={getMonacoEditorOptions() as any}
       />
 
@@ -121,3 +119,5 @@ export const CodeEditor: React.FC = () => {
     </div>
   );
 };
+
+export default CodeEditor;

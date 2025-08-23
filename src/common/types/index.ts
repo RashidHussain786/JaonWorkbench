@@ -1,5 +1,5 @@
 export interface JsonEditorState {
-  jsonData: any;
+  jsonData: unknown;
   jsonString: string;
   activeMode: 'tree' | 'code' | 'table';
   theme: 'light' | 'dark';
@@ -19,7 +19,7 @@ export interface JsonError {
 }
 
 export interface HistoryState {
-  data: any;
+  data: unknown;
   jsonString: string;
   timestamp: number;
   action: string;
@@ -27,7 +27,7 @@ export interface HistoryState {
 
 export interface FileImportResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
 }
 

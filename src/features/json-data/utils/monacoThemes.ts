@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor';
 
 export const defineMonacoThemes = (monacoInstance: typeof monaco) => {
+  
   monacoInstance.editor.defineTheme('json-light', {
     base: 'vs',
     inherit: true,

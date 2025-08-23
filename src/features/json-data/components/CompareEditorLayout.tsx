@@ -1,5 +1,22 @@
 import React, { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor';
+(self as any).MonacoEnvironment = {
+  getWorkerUrl: function (_moduleId: string, label: string) {
+    if (label === "json") {
+      return "/monacoeditorwork/json.worker.bundle.js";
+    }
+    if (label === "css" || label === "scss" || label === "less") {
+      return "/monacoeditorwork/css.worker.bundle.js";
+    }
+    if (label === "html" || label === "handlebars" || label === "razor") {
+      return "/monacoeditorwork/html.worker.bundle.js";
+    }
+    if (label === "typescript" || label === "javascript") {
+      return "/monacoeditorwork/ts.worker.bundle.js";
+    }
+    return "/monacoeditorwork/editor.worker.bundle.js";
+  },
+};
 import { useCompareStore } from '../../../store/compareStore';
 import { Search, ChevronUp, ChevronDown, Copy, Clipboard, FileUp, FileDown } from 'lucide-react';
 import { useTheme } from '../../theme/hooks/useTheme';
@@ -12,7 +29,7 @@ interface CompareEditorLayoutProps {
   showControls?: boolean;
 }
 
-export const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
+const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
   originalContent,
   modifiedContent,
   showControls = true
@@ -114,7 +131,7 @@ export const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
         editor.setValue(formattedJson);
         setter(formattedJson);
         toast.success('JSON formatted successfully');
-      } catch (error) {
+      } catch {
         toast.error('Failed to format JSON: Invalid JSON');
       }
     }
@@ -132,7 +149,7 @@ export const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
         editor.setValue(minifiedJson);
         setter(minifiedJson);
         toast.success('JSON minified successfully');
-      } catch (error) {
+      } catch {
         toast.error('Failed to minify JSON: Invalid JSON');
       }
     }
@@ -151,7 +168,7 @@ export const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
         try {
           processedContent = JSON.stringify(JSON.parse(content));
           toast.success('JSON minified successfully');
-        } catch (error) {
+        } catch {
           toast.error('Failed to minify JSON: Invalid JSON');
           return; // Stop execution if JSON is invalid
         }
@@ -275,3 +292,5 @@ export const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
     </div>
   );
 };
+
+export default CompareEditorLayout;

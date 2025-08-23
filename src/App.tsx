@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Header, Sidebar, StatusBar, FileDropzone, ModeSelector, InputTypeSelector, CompareButton } from './features/layout/components/index';
 import { SearchBar } from './features/search/components/index';
 import { ActionButtons } from './features/file-operations/components/index';
-import { CodeEditor, TreeView, TableView, CompareEditorLayout } from './features/json-data/components/index';
-import { FolderCompareLayout } from './features/folder-compare/components';
 import { useMainEditorStore } from './store/mainEditorStore';
 import { useCompareStore } from './store/compareStore';
 import { useFolderCompareStore } from './store/folderCompareStore';
@@ -15,12 +13,21 @@ import { ThemeContext } from './features/theme/context/ThemeContext';
 import { useTheme } from './features/theme/hooks/useTheme';
 import { X } from 'lucide-react';
 import FeatureTour from './components/FeatureTour';
+import Spinner from './components/Spinner';
+
+// Dynamically import view mode components
+const LazyTreeView = React.lazy(() => import('./features/json-data/components/TreeView'));
+const LazyTableView = React.lazy(() => import('./features/json-data/components/TableView'));
+const LazyCodeEditor = React.lazy(() => import('./features/json-data/components/CodeEditor'));
+const LazyCompareEditorLayout = React.lazy(() => import('./features/json-data/components/CompareEditorLayout'));
+const LazyFolderCompareLayout = React.lazy(() => import('./features/folder-compare/components/FolderCompareLayout'));
+
 
 function App() {
   const { activeMode } = useMainEditorStore();
-  const { isComparing, leftContent, rightContent, setLeftContent, setRightContent, setIsComparing, setCompareMode, compareMode } = useCompareStore();
+  const { isComparing, leftContent, rightContent, setLeftContent, setRightContent, setIsComparing, setCompareMode, compareMode, setOriginalJsonString, originalJsonString } = useCompareStore();
   const { setLeftFolderFiles, setRightFolderFiles, setActiveCompareFile } = useFolderCompareStore();
-  const { validateAndUpdate, jsonString, undo, redo, formatJson } = useJsonData();
+  const { validateAndUpdate, jsonString, undo, redo, formatJson, setJsonString } = useJsonData();
 
   const { theme } = useTheme();
 
@@ -33,6 +40,13 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [theme, validateAndUpdate, jsonString]);
+
+  // Save original JSON string when entering comparison mode
+  useEffect(() => {
+    if (isComparing) {
+      setOriginalJsonString(jsonString);
+    }
+  }, [isComparing, jsonString, setOriginalJsonString]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -63,27 +77,39 @@ function App() {
   }, [undo, redo, formatJson]);
 
   const renderEditor = () => {
-    switch (activeMode) {
-      case 'tree':
-        return <TreeView />;
-      case 'table':
-        return <TableView />;
-      case 'code':
-      default:
-        return <CodeEditor />;
-    }
+    return (
+      <Suspense fallback={<Spinner />}>
+        {(() => { // Use an IIFE to handle switch inside JSX
+          switch (activeMode) {
+            case 'tree':
+              return <LazyTreeView />;
+            case 'table':
+              return <LazyTableView />;
+            case 'code':
+            default:
+              return <LazyCodeEditor />;
+          }
+        })()}
+      </Suspense>
+    );
   };
 
   const renderMainContent = () => {
     if (isComparing) {
-      switch (compareMode) {
-        case 'folder':
-          return <FolderCompareLayout />;
-        case 'file':
-        case 'json':
-        default:
-          return <CompareEditorLayout originalContent={leftContent} modifiedContent={rightContent} />;
-      }
+      return (
+        <Suspense fallback={<Spinner />}>
+          {(() => {
+            switch (compareMode) {
+              case 'folder':
+                return <LazyFolderCompareLayout />;
+              case 'file':
+              case 'json':
+              default:
+                return <LazyCompareEditorLayout originalContent={leftContent} modifiedContent={rightContent} />;
+            }
+          })()}
+        </Suspense>
+      );
     } else {
       return renderEditor();
     }
@@ -97,6 +123,7 @@ function App() {
     setActiveCompareFile(null);
     setLeftContent('');
     setRightContent('');
+    setJsonString(originalJsonString, 'restore_from_compare'); // Restore original JSON
   };
 
   return (

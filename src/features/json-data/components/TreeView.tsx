@@ -45,7 +45,7 @@ const darkTheme = {
   base0F: '#b18e62'
 };
 
-export const TreeView: React.FC = () => {
+const TreeView: React.FC = () => {
   const { jsonData, isValid } = useJsonData();
   const { theme } = useTheme();
 
@@ -129,3 +129,5 @@ export const TreeView: React.FC = () => {
     </div>
   );
 };
+
+export default TreeView;

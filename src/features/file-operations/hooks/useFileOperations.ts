@@ -76,7 +76,7 @@ export const useFileOperations = (): UseFileOperationsReturn => {
       let parsedJson;
       try {
         parsedJson = JSON.parse(decoded);
-      } catch (jsonError) {
+      } catch {
         toast.error('Decoded content is not valid JSON.');
         return;
       }

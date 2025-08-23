@@ -23,6 +23,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // TODO: Log the error to a logging service like Sentry, LogRocket, or Datadog
     console.error("Uncaught error:", error, errorInfo);
     this.setState({
       error: error,

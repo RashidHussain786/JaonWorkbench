@@ -59,11 +59,12 @@ export const useFolderOperations = () => {
 
       let resolved = false;
 
-      input.onchange = (e: any) => {
+      input.onchange = (e: Event) => {
+        const target = e.target as HTMLInputElement;
         if (resolved) return;
         resolved = true;
-        if (e.target.files.length > 0) {
-          resolve(e.target.files);
+        if (target.files && target.files.length > 0) {
+          resolve(target.files);
         } else {
           resolve(null);
         }

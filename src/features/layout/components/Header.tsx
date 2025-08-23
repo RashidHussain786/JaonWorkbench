@@ -30,6 +30,7 @@ export const Header: React.FC = () => {
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * greetings.length);
     setCurrentGreeting(greetings[randomIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

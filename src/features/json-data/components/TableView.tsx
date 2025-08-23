@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useJsonData } from '../hooks/useJsonData';
-
-export const TableView: React.FC = () => {
+const TableView: React.FC = () => {
   const { jsonData, isValid } = useJsonData();
 
   const tableData = useMemo(() => {
@@ -129,7 +128,7 @@ export const TableView: React.FC = () => {
           </tbody>
         </table>
       </div>
-      
+
       {tableData.rows.length === 0 && (
         <div className="text-center p-8 text-gray-500 dark:text-gray-400">
           No data to display
@@ -138,3 +137,5 @@ export const TableView: React.FC = () => {
     </div>
   );
 };
+
+export default TableView;

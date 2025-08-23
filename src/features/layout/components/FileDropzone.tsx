@@ -24,7 +24,7 @@ export const FileDropzone: React.FC = () => {
       } else {
         toast.error(result.error || 'Failed to import file');
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to process file');
     } finally {
       setLoading(false);
