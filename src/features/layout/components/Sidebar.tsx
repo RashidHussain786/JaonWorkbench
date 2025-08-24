@@ -17,33 +17,33 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 flex flex-col">
+    <div className="w-80 bg-light-surface dark:bg-dark-background border-l border-light-border dark:border-dark-border flex flex-col">
 
 
       {/* Stats Section */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-b border-light-border dark:border-dark-border">
         <div className="flex items-center space-x-2 mb-3">
-          <Info size={18} className="text-gray-500" />
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">JSON Stats</span>
+          <Info size={18} className="text-light-text-secondary" />
+          <span className="text-sm font-medium text-light-text-primary dark:text-dark-text-secondary">JSON Stats</span>
         </div>
 
         {stats ? (
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Size:</span>
-              <span className="font-mono text-gray-900 dark:text-white">{formatSize(stats.size)}</span>
+              <span className="text-light-text-secondary dark:text-dark-text-secondary">Size:</span>
+              <span className="font-mono text-light-text-primary dark:text-dark-text-primary">{formatSize(stats.size)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Depth:</span>
-              <span className="font-mono text-gray-900 dark:text-white">{stats.depth}</span>
+              <span className="text-light-text-secondary dark:text-dark-text-secondary">Depth:</span>
+              <span className="font-mono text-light-text-primary dark:text-dark-text-primary">{stats.depth}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Keys:</span>
-              <span className="font-mono text-gray-900 dark:text-white">{stats.keys}</span>
+              <span className="text-light-text-secondary dark:text-dark-text-secondary">Keys:</span>
+              <span className="font-mono text-light-text-primary dark:text-dark-text-primary">{stats.keys}</span>
             </div>
           </div>
         ) : (
-          <div className="text-sm text-gray-500 dark:text-gray-400 italic">
+          <div className="text-sm text-light-text-secondary dark:text-dark-text-secondary italic">
             {isValid ? 'No data' : 'Invalid JSON'}
           </div>
         )}
@@ -53,29 +53,29 @@ export const Sidebar: React.FC = () => {
 
       {/* Help Section */}
       <div className="p-4 flex-1">
-        <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+        <div className="text-sm font-medium text-light-text-primary dark:text-dark-text-secondary mb-3">
           Keyboard Shortcuts
         </div>
-        <div className="space-y-2 text-xs text-gray-600 dark:text-gray-400">
+        <div className="space-y-2 text-xs text-light-text-secondary dark:text-dark-text-secondary">
           <div className="flex justify-between">
             <span>Format JSON</span>
-            <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">Ctrl+Shift+F</kbd>
+            <kbd className="px-1 py-0.5 bg-light-border dark:bg-dark-surface rounded">Ctrl+Shift+F</kbd>
           </div>
           <div className="flex justify-between">
             <span>Copy JSON</span>
-            <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">Ctrl+C</kbd>
+            <kbd className="px-1 py-0.5 bg-light-border dark:bg-dark-surface rounded">Ctrl+C</kbd>
           </div>
           <div className="flex justify-between">
             <span>Paste JSON</span>
-            <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">Ctrl+V</kbd>
+            <kbd className="px-1 py-0.5 bg-light-border dark:bg-dark-surface rounded">Ctrl+V</kbd>
           </div>
           <div className="flex justify-between">
             <span>Undo</span>
-            <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">Ctrl+Z</kbd>
+            <kbd className="px-1 py-0.5 bg-light-border dark:bg-dark-surface rounded">Ctrl+Z</kbd>
           </div>
           <div className="flex justify-between">
             <span>Redo</span>
-            <kbd className="px-1 py-0.5 bg-gray-200 dark:bg-gray-700 rounded">Ctrl+Y</kbd>
+            <kbd className="px-1 py-0.5 bg-light-border dark:bg-dark-surface rounded">Ctrl+Y</kbd>
           </div>
         </div>
       </div>

@@ -11,16 +11,16 @@ export const StatusBar: React.FC = () => {
     if (isValid) {
       const statusText = inputType === 'base64' ? 'Valid Base64' : 'Valid JSON';
       return {
-        icon: <CheckCircle size={16} className="text-green-500" />,
+        icon: <CheckCircle size={16} className="text-green-600" />,
         text: statusText,
-        bgColor: 'bg-green-50 dark:bg-green-900/20',
-        textColor: 'text-green-700 dark:text-green-300'
+        bgColor: 'bg-green-100 dark:bg-dark-primary/20',
+        textColor: 'text-green-700 dark:text-dark-primary'
       };
     } else {
       return {
-        icon: <AlertCircle size={16} className="text-red-500" />,
+        icon: <AlertCircle size={16} className="text-red-600" />,
         text: `${errors.length} error${errors.length !== 1 ? 's' : ''}`,
-        bgColor: 'bg-red-50 dark:bg-red-900/20',
+        bgColor: 'bg-red-100 dark:bg-red-900/20',
         textColor: 'text-red-700 dark:text-red-300'
       };
     }
@@ -33,7 +33,7 @@ export const StatusBar: React.FC = () => {
     : (jsonData && typeof jsonData === 'object' ? Object.keys(jsonData).length : 0);
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-4 py-2 status-bar" data-tourid="status-bar">
+    <div className="bg-light-surface dark:bg-dark-surface border-t border-light-border dark:border-dark-border px-4 py-2 status-bar" data-tourid="status-bar">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           {/* Validation Status */}
@@ -46,7 +46,7 @@ export const StatusBar: React.FC = () => {
 
           {/* Data Info */}
           {isValid && (
-            <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex items-center space-x-4 text-sm text-light-text-secondary dark:text-dark-text-secondary">
               <span>Type: <span className="font-mono">{dataType}</span></span>
               <span>
                 {Array.isArray(jsonData) ? 'Items' : 'Keys'}:
@@ -58,7 +58,7 @@ export const StatusBar: React.FC = () => {
 
         <div className="flex items-center space-x-4">
           {/* Processing Indicator */}
-          <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center space-x-2 text-sm text-light-text-secondary dark:text-dark-text-secondary">
             <Clock size={14} />
             <span>Processed locally</span>
           </div>

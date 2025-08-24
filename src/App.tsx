@@ -131,7 +131,7 @@ function App() {
       <FeatureTour />
       <JsonDataContext.Provider value={useJsonData()}>
         <ThemeContext.Provider value={useTheme()}>
-          <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+          <div className="h-screen flex flex-col bg-light-background dark:bg-dark-background text-light-text-primary dark:text-dark-text-primary">
             <Header />
 
             <div className="flex-1 flex overflow-hidden">
@@ -146,13 +146,13 @@ function App() {
                     <SearchBar />
                     <CompareButton />
                     {isComparing && (
-                      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-dark-surface rounded-lg p-1">
                         <button
                           onClick={handleExitCompareMode}
                           className="px-2 py-1 hover:bg-red-500 dark:hover:bg-red-600 rounded-md transition-colors"
                           title="Exit Compare Mode"
                         >
-                          <X size={18} className="text-gray-700 dark:text-gray-300" />
+                          <X size={18} className="text-gray-700 dark:text-dark-text-secondary" />
                         </button>
                       </div>
                     )}
@@ -181,8 +181,8 @@ function App() {
               toastOptions={{
                 duration: 3000,
                 style: {
-                  background: theme === 'dark' ? '#374151' : '#fff',
-                  color: theme === 'dark' ? '#fff' : '#000',
+                  background: theme === 'dark' ? 'dark-surface' : '#fff',
+                  color: theme === 'dark' ? 'dark-text-primary' : '#000',
                 },
               }}
             />

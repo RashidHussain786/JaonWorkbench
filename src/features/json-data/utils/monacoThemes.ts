@@ -1,19 +1,19 @@
 import * as monaco from 'monaco-editor';
 
 export const defineMonacoThemes = (monacoInstance: typeof monaco) => {
-  
+
   monacoInstance.editor.defineTheme('json-light', {
     base: 'vs',
     inherit: true,
     rules: [
-      { token: 'string.key.json', foreground: '0451A5' },
-      { token: 'string.value.json', foreground: '0A7A37' },
-      { token: 'number.json', foreground: '164BCB' },
-      { token: 'keyword.json', foreground: 'AF00DB' },
+      { token: 'string.key.json', foreground: '268bd2' },
+      { token: 'string.value.json', foreground: '859900' },
+      { token: 'number.json', foreground: 'dc322f' },
+      { token: 'keyword.json', foreground: 'cb4b16' },
     ],
     colors: {
-      'editor.background': '#FFFFFF',
-      'editor.foreground': '#000000',
+      'editor.background': '#fdf6e3',
+      'editor.foreground': '#657b83',
     }
   });
 
@@ -27,7 +27,7 @@ export const defineMonacoThemes = (monacoInstance: typeof monaco) => {
       { token: 'keyword.json', foreground: 'C586C0' },
     ],
     colors: {
-      'editor.background': '#1E1E1E',
+      'editor.background': '#111827',
       'editor.foreground': '#D4D4D4',
     }
   });

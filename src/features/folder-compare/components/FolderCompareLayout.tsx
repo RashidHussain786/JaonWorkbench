@@ -6,8 +6,8 @@ import { FolderPlus } from 'lucide-react';
 
 const Tab: React.FC<{ path: string; isActive: boolean; onClick: () => void; }> = ({ path, isActive, onClick }) => {
   const baseClasses = 'px-3 py-2 text-sm whitespace-nowrap cursor-pointer transition-colors duration-150';
-  const activeClasses = 'border-b-2 border-blue-500 text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-gray-800';
-  const inactiveClasses = 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800';
+  const activeClasses = 'border-b-2 border-light-primary text-light-primary bg-light-surface dark:bg-dark-surface';
+  const inactiveClasses = 'text-light-text-secondary dark:text-dark-text-secondary hover:bg-light-border dark:hover:bg-dark-border';
 
   const classes = `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`;
 
@@ -32,15 +32,15 @@ const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
 
   if (files.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-start px-1 py-1 bg-gray-50 dark:bg-gray-900/50">
+      <div className="flex-1 flex items-center justify-start px-1 py-1 bg-light-background dark:bg-dark-background/50">
         <button
           onClick={selectFolder}
-          className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+          className="flex items-center space-x-2 px-4 py-2 bg-light-surface text-light-text-primary rounded-md hover:bg-light-border transition-colors dark:bg-dark-surface dark:text-dark-text-primary dark:hover:bg-dark-border"
         >
           <FolderPlus size={20} />
-          <span>Select Folder</span>
+          <span>Select</span>
         </button>
-        <p className="text-sm text-orange-500 dark:text-orange-400 ml-2">
+        <p className="text-sm text-light-text-secondary dark:text-orange-400 ml-2">
           For best results, select folders with similar structures (e.g., 'project-v1' and 'project-v2').
         </p>
       </div>
@@ -48,7 +48,7 @@ const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
   }
 
   return (
-    <div className="flex overflow-x-auto bg-gray-50 dark:bg-gray-900/50">
+    <div className="flex overflow-x-auto bg-light-background dark:bg-dark-background/50">
       {files.map(file => (
         <Tab
           key={file.path}
@@ -81,11 +81,11 @@ const FolderCompareLayout: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="grid grid-cols-2 min-h-0 border-b border-gray-200 dark:border-gray-700 gap-x-4">
+      <div className="grid grid-cols-2 min-h-0 border-b border-light-border dark:border-dark-border gap-x-4">
         <div className="flex flex-col min-w-0">
           <TabPanel isLeftPanel={true} />
         </div>
-        <div className="flex flex-col min-w-0 border-l border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col min-w-0 border-l border-light-border dark:border-dark-border">
           <TabPanel isLeftPanel={false} />
         </div>
       </div>

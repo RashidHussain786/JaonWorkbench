@@ -15,11 +15,8 @@ export const CodeEditor: React.FC = () => {
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
-
     defineMonacoThemes(monaco);
-
     monaco.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
-
     applyMonacoEditorShortcuts(editor, monaco);
   };
 
@@ -27,6 +24,7 @@ export const CodeEditor: React.FC = () => {
     if (editorRef.current) {
       const monacoInstance = window.monaco;
       if (monacoInstance) {
+        monacoInstance.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
         if (inputType === 'base64') {
           monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: false,
