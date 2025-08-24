@@ -13,14 +13,14 @@ export const ModeSelector: React.FC = () => {
   ];
 
   return (
-    <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1 space-x-1 mode-selector" data-tourid="mode-selector">
+    <div className="flex bg-light-surface dark:bg-dark-surface rounded-lg p-1 space-x-1 mode-selector" data-tourid="mode-selector">
       {modes.map(({ id, icon }) => (
         <button
           key={id}
           onClick={() => setActiveMode(id)}
           className={`px-2 py-1 rounded-md transition-all duration-200 ${activeMode === id
-              ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+            ? 'bg-light-primary text-white dark:bg-light-primary dark:text-dark-text-primary shadow-sm'
+            : 'text-light-text-secondary dark:bg-dark-surface dark:text-dark-text-secondary hover:text-light-text-primary dark:hover:bg-dark-border dark:hover:text-dark-text-primary'
             }`}
         >
           {icon}

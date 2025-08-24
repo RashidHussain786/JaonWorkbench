@@ -13,34 +13,34 @@ export const CompareButton: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+    <div className="flex items-center space-x-1 bg-light-surface dark:bg-dark-surface rounded-lg p-1">
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors compare-button"
+          className="px-2 py-1 hover:bg-light-border dark:hover:bg-dark-border rounded-md transition-colors compare-button"
           title="Compare JSON/Files/Folders"
           data-tourid="compare-button"
         >
-          <GitCompare size={18} className="text-gray-700 dark:text-gray-300" />
+          <GitCompare size={18} className="text-light-text-secondary dark:text-dark-text-secondary" />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10">
+          <div className="absolute right-0 mt-2 w-40 bg-light-surface dark:bg-dark-surface rounded-md shadow-lg z-10">
             <button
               onClick={() => handleCompareOption('json')}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="block w-full text-left px-4 py-2 text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:hover:bg-dark-border"
             >
               Compare JSON
             </button>
             <button
               onClick={() => handleCompareOption('file')}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="block w-full text-left px-4 py-2 text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:hover:bg-dark-border"
             >
               Compare File
             </button>
             <button
               onClick={() => handleCompareOption('folder')}
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="block w-full text-left px-4 py-2 text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-light-border dark:hover:bg-dark-border"
             >
               Compare Folder
             </button>
