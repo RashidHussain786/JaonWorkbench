@@ -11,9 +11,9 @@ import { JsonDataContext } from './features/json-data/context/JsonDataContext';
 import { useJsonData } from './features/json-data/hooks/useJsonData';
 import { ThemeContext } from './features/theme/context/ThemeContext';
 import { useTheme } from './features/theme/hooks/useTheme';
-import { X } from 'lucide-react';
 import FeatureTour from './components/FeatureTour';
 import Spinner from './components/Spinner';
+import { useSidebarStore } from './store/sidebarStore';
 
 // Dynamically import view mode components
 const LazyTreeView = React.lazy(() => import('./features/json-data/components/TreeView'));
@@ -28,6 +28,7 @@ function App() {
   const { isComparing, leftContent, rightContent, setLeftContent, setRightContent, setIsComparing, setCompareMode, compareMode, setOriginalJsonString, originalJsonString } = useCompareStore();
   const { setLeftFolderFiles, setRightFolderFiles, setActiveCompareFile } = useFolderCompareStore();
   const { validateAndUpdate, jsonString, undo, redo, formatJson, setJsonString } = useJsonData();
+  const { isCollapsed } = useSidebarStore();
 
   const { theme } = useTheme();
 
@@ -94,27 +95,6 @@ function App() {
     );
   };
 
-  const renderMainContent = () => {
-    if (isComparing) {
-      return (
-        <Suspense fallback={<Spinner />}>
-          {(() => {
-            switch (compareMode) {
-              case 'folder':
-                return <LazyFolderCompareLayout />;
-              case 'file':
-              case 'json':
-              default:
-                return <LazyCompareEditorLayout originalContent={leftContent} modifiedContent={rightContent} />;
-            }
-          })()}
-        </Suspense>
-      );
-    } else {
-      return renderEditor();
-    }
-  };
-
   const handleExitCompareMode = () => {
     setIsComparing(false);
     setCompareMode(null);
@@ -124,6 +104,27 @@ function App() {
     setLeftContent('');
     setRightContent('');
     setJsonString(originalJsonString, 'restore_from_compare'); // Restore original JSON
+  };
+
+  const renderMainContent = () => {
+    if (isComparing) {
+      return (
+        <Suspense fallback={<Spinner />}>
+          {(() => {
+            switch (compareMode) {
+              case 'folder':
+                return <LazyFolderCompareLayout handleExitCompareMode={handleExitCompareMode} />;
+              case 'file':
+              case 'json':
+              default:
+                return <LazyCompareEditorLayout originalContent={leftContent} modifiedContent={rightContent} handleExitCompareMode={handleExitCompareMode} />;
+            }
+          })()}
+        </Suspense>
+      );
+    } else {
+      return renderEditor();
+    }
   };
 
   return (
@@ -136,28 +137,19 @@ function App() {
 
             <div className="flex-1 flex overflow-hidden">
               {/* Main Content */}
-              <div className="flex-1 flex flex-col p-4">
+              <div className={`flex-1 flex flex-col p-4 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-full' : 'w-[calc(100%-20rem)]'}`}>
                 {/* Mode Selector and Ad Space */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2">
-                    <ModeSelector />
-                    <InputTypeSelector />
-                    <ActionButtons />
-                    <SearchBar />
-                    <CompareButton />
-                    {isComparing && (
-                      <div className="flex items-center space-x-1 bg-gray-100 dark:bg-dark-surface rounded-lg p-1">
-                        <button
-                          onClick={handleExitCompareMode}
-                          className="px-2 py-1 hover:bg-red-500 dark:hover:bg-red-600 rounded-md transition-colors"
-                          title="Exit Compare Mode"
-                        >
-                          <X size={18} className="text-gray-700 dark:text-dark-text-secondary" />
-                        </button>
-                      </div>
-                    )}
+                {!isComparing && (
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <ModeSelector />
+                      <InputTypeSelector />
+                      <ActionButtons />
+                      <SearchBar />
+                      <CompareButton />
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Editor */}
                 <div className="flex-1 min-h-0">

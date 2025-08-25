@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor';
 import { defineMonacoThemes } from '../utils/monacoThemes';
+import { X } from 'lucide-react';
 
 // Define Monaco themes once
 defineMonacoThemes(monaco);
@@ -32,12 +33,14 @@ interface CompareEditorLayoutProps {
   originalContent: string;
   modifiedContent: string;
   showControls?: boolean;
+  handleExitCompareMode: () => void;
 }
 
 const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
   originalContent,
   modifiedContent,
-  showControls = true
+  showControls = true,
+  handleExitCompareMode,
 }) => {
   const diffEditorRef = useRef<HTMLDivElement>(null);
   const diffEditorInstanceRef = useRef<monaco.editor.IStandaloneDiffEditor | null>(null);
@@ -196,7 +199,7 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
   return (
     <div className="flex flex-col h-full space-y-2">
       {showControls && (
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 items-center">
           {/* Left Controls */}
           <div className="flex-1 flex items-center space-x-2">
             <div className="relative flex-1">
@@ -291,6 +294,13 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
               <button onClick={() => handleTrimWhitespace('modified')} className="px-2 py-1 rounded-md text-sm font-medium transition-colors bg-light-surface text-light-text-primary hover:bg-light-border dark:bg-dark-surface dark:text-dark-text-primary dark:hover:bg-dark-border" title="Trim Whitespace">Trim</button>
             )}
           </div>
+          <button
+            onClick={handleExitCompareMode}
+            className="p-2 hover:bg-red-500 dark:hover:bg-red-600 rounded-md transition-colors"
+            title="Exit Compare Mode"
+          >
+            <X size={18} className="text-gray-700 dark:text-dark-text-secondary" />
+          </button>
         </div>
       )}
       <div ref={diffEditorRef} className="flex-1 border border-gray-300 dark:border-dark-border rounded-md" />

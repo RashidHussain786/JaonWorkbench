@@ -2,7 +2,11 @@ import React, { useMemo } from 'react';
 import { useFolderCompareStore } from '../../../store/folderCompareStore';
 import CompareEditorLayout from '../../json-data/components/CompareEditorLayout';
 import { useFolderOperations } from '../hooks/useFolderOperations';
-import { FolderPlus } from 'lucide-react';
+import { FolderPlus, X } from 'lucide-react';
+
+interface FolderCompareLayoutProps {
+  handleExitCompareMode: () => void;
+}
 
 const Tab: React.FC<{ path: string; isActive: boolean; onClick: () => void; }> = ({ path, isActive, onClick }) => {
   const baseClasses = 'px-3 py-2 text-sm whitespace-nowrap cursor-pointer transition-colors duration-150';
@@ -61,7 +65,7 @@ const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
   );
 };
 
-const FolderCompareLayout: React.FC = () => {
+const FolderCompareLayout: React.FC<FolderCompareLayoutProps> = ({ handleExitCompareMode }) => {
   const { leftFolderFiles, rightFolderFiles, activeCompareFile } = useFolderCompareStore();
 
   const activeFileContent = useMemo(() => {
@@ -80,7 +84,14 @@ const FolderCompareLayout: React.FC = () => {
   }, [activeCompareFile, leftFolderFiles, rightFolderFiles]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
+      <button
+        onClick={handleExitCompareMode}
+        className="absolute top-2 right-2 z-10 px-2 py-1 bg-red-200 dark:bg-red-800 hover:bg-red-500 dark:hover:bg-red-600 rounded-md transition-colors"
+        title="Exit Compare Mode"
+      >
+        <X size={18} className="text-gray-700 dark:text-dark-text-secondary" />
+      </button>
       <div className="grid grid-cols-2 min-h-0 border-b border-light-border dark:border-dark-border gap-x-4">
         <div className="flex flex-col min-w-0">
           <TabPanel isLeftPanel={true} />
@@ -94,6 +105,7 @@ const FolderCompareLayout: React.FC = () => {
           originalContent={activeFileContent.left}
           modifiedContent={activeFileContent.right}
           showControls={false}
+          handleExitCompareMode={handleExitCompareMode}
         />
       </div>
     </div>
