@@ -12,10 +12,10 @@ export const applyMonacoEditorShortcuts = (editor: monaco.editor.IStandaloneCode
   });
 };
 
-export const getMonacoEditorOptions = (): monaco.editor.IStandaloneEditorConstructionOptions => {
+export const getMonacoEditorOptions = (wordWrap: 'on' | 'off'): monaco.editor.IStandaloneEditorConstructionOptions => {
   return {
     minimap: { enabled: true },
-    wordWrap: 'on',
+    wordWrap,
     lineNumbers: 'on',
     folding: true,
     bracketPairColorization: { enabled: true },

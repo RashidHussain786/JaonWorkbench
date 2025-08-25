@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor';
 import { defineMonacoThemes } from '../utils/monacoThemes';
 import { X } from 'lucide-react';
+import { useEditorStore } from '../../../store/editorStore';
 
 // Define Monaco themes once
 defineMonacoThemes(monaco);
@@ -44,6 +45,7 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
 }) => {
   const diffEditorRef = useRef<HTMLDivElement>(null);
   const diffEditorInstanceRef = useRef<monaco.editor.IStandaloneDiffEditor | null>(null);
+  const { wordWrap, toggleWordWrap } = useEditorStore();
 
   const {
     compareMode,
@@ -87,6 +89,14 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
       const originalEditor = diffEditorInstanceRef.current.getOriginalEditor();
       const modifiedEditor = diffEditorInstanceRef.current.getModifiedEditor();
 
+      originalEditor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
+        toggleWordWrap();
+      });
+
+      modifiedEditor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
+        toggleWordWrap();
+      });
+
       originalEditor.onDidChangeModelContent(() => {
         setLeftContent(originalEditor.getValue());
       });
@@ -101,7 +111,16 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
         modifiedModel.dispose();
       };
     }
-  }, [originalContent, modifiedContent, compareMode, theme, setLeftContent, setRightContent]);
+  }, [originalContent, modifiedContent, compareMode, theme, setLeftContent, setRightContent, toggleWordWrap]);
+
+  useEffect(() => {
+    if (diffEditorInstanceRef.current) {
+      const originalEditor = diffEditorInstanceRef.current.getOriginalEditor();
+      const modifiedEditor = diffEditorInstanceRef.current.getModifiedEditor();
+      originalEditor.updateOptions({ wordWrap: wordWrap });
+      modifiedEditor.updateOptions({ wordWrap: wordWrap });
+    }
+  }, [wordWrap]);
 
   const handleCopy = (editorType: 'original' | 'modified') => {
     const editor = editorType === 'original'

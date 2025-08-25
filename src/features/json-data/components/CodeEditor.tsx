@@ -6,11 +6,13 @@ import { useMainEditorStore } from '../../../store/mainEditorStore';
 import * as monaco from 'monaco-editor';
 import { defineMonacoThemes } from '../utils/monacoThemes';
 import { applyMonacoEditorShortcuts, getMonacoEditorOptions } from '../utils/monacoEditorUtils';
+import { useEditorStore } from '../../../store/editorStore';
 
 export const CodeEditor: React.FC = () => {
   const { jsonString, setJsonString, errors, isValid } = useJsonData();
   const { theme } = useTheme();
   const { searchQuery, inputType } = useMainEditorStore();
+  const { wordWrap, toggleWordWrap } = useEditorStore();
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
@@ -18,7 +20,17 @@ export const CodeEditor: React.FC = () => {
     defineMonacoThemes(monaco);
     monaco.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
     applyMonacoEditorShortcuts(editor, monaco);
+
+    editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
+      toggleWordWrap();
+    });
   };
+
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.updateOptions({ wordWrap });
+    }
+  }, [wordWrap]);
 
   useEffect(() => {
     if (editorRef.current) {
@@ -95,7 +107,7 @@ export const CodeEditor: React.FC = () => {
         onChange={(value) => setJsonString(value || '', 'edit')}
         onMount={handleEditorDidMount}
         theme={theme === 'dark' ? 'json-dark' : 'json-light'}
-        options={getMonacoEditorOptions() as any}
+        options={getMonacoEditorOptions(wordWrap) as any}
       />
 
       {/* Error Display */}
