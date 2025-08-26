@@ -6,11 +6,13 @@ import { useMainEditorStore } from '../../../store/mainEditorStore';
 import * as monaco from 'monaco-editor';
 import { defineMonacoThemes } from '../utils/monacoThemes';
 import { applyMonacoEditorShortcuts, getMonacoEditorOptions } from '../utils/monacoEditorUtils';
+import { useEditorStore } from '../../../store/editorStore';
 
 export const CodeEditor: React.FC = () => {
   const { jsonString, setJsonString, errors, isValid } = useJsonData();
   const { theme } = useTheme();
-  const { searchQuery, inputType } = useMainEditorStore();
+  const { searchQuery, inputType, setJsonString: setMainEditorJsonString, jsonString: mainEditorJsonString } = useMainEditorStore();
+  const { jsonWordWrap, base64WordWrap, toggleWordWrap } = useEditorStore();
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
   const handleEditorDidMount = (editor: any, monaco: any) => {
@@ -18,12 +20,23 @@ export const CodeEditor: React.FC = () => {
     defineMonacoThemes(monaco);
     monaco.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
     applyMonacoEditorShortcuts(editor, monaco);
+
+    editor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
+      toggleWordWrap(inputType === 'json' ? 'json' : 'base64');
+    });
   };
 
   useEffect(() => {
     if (editorRef.current) {
+      const wordWrap = inputType === 'json' ? jsonWordWrap : base64WordWrap;
+      editorRef.current.updateOptions({ wordWrap });
+    }
+  }, [jsonWordWrap, base64WordWrap, inputType]);
+
+  useEffect(() => {
+    if (editorRef.current) {
       const monacoInstance = window.monaco;
-      if (monacoInstance) {
+      if (monacoInstance && monacoInstance.languages.json) {
         monacoInstance.editor.setTheme(theme === 'dark' ? 'json-dark' : 'json-light');
         if (inputType === 'base64') {
           monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -86,16 +99,24 @@ export const CodeEditor: React.FC = () => {
     }
   }, [errors, isValid, inputType]);
 
+  const wordWrap = inputType === 'json' ? jsonWordWrap : base64WordWrap;
+
   return (
     <div className="h-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden monaco-editor-container" data-tourid="monaco-editor-container">
       <Editor
         height="100%"
         defaultLanguage={inputType === 'base64' ? 'plaintext' : 'json'}
-        value={jsonString}
-        onChange={(value) => setJsonString(value || '', 'edit')}
+        value={inputType === 'base64' ? mainEditorJsonString : jsonString}
+        onChange={(value) => {
+          if (inputType === 'base64') {
+            setMainEditorJsonString(value || '');
+          } else {
+            setJsonString(value || '', 'edit');
+          }
+        }}
         onMount={handleEditorDidMount}
         theme={theme === 'dark' ? 'json-dark' : 'json-light'}
-        options={getMonacoEditorOptions() as any}
+        options={getMonacoEditorOptions(wordWrap) as any}
       />
 
       {/* Error Display */}

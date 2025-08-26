@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as monaco from 'monaco-editor';
 import { defineMonacoThemes } from '../utils/monacoThemes';
 import { X } from 'lucide-react';
+import { useEditorStore } from '../../../store/editorStore';
 
 // Define Monaco themes once
 defineMonacoThemes(monaco);
@@ -44,6 +45,7 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
 }) => {
   const diffEditorRef = useRef<HTMLDivElement>(null);
   const diffEditorInstanceRef = useRef<monaco.editor.IStandaloneDiffEditor | null>(null);
+  const { jsonWordWrap, fileWordWrap, toggleWordWrap } = useEditorStore();
 
   const {
     compareMode,
@@ -87,6 +89,11 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
       const originalEditor = diffEditorInstanceRef.current.getOriginalEditor();
       const modifiedEditor = diffEditorInstanceRef.current.getModifiedEditor();
 
+      const toggle = () => toggleWordWrap(compareMode === 'json' ? 'json' : 'file');
+
+      originalEditor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, toggle);
+      modifiedEditor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, toggle);
+
       originalEditor.onDidChangeModelContent(() => {
         setLeftContent(originalEditor.getValue());
       });
@@ -101,7 +108,17 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
         modifiedModel.dispose();
       };
     }
-  }, [originalContent, modifiedContent, compareMode, theme, setLeftContent, setRightContent]);
+  }, [originalContent, modifiedContent, compareMode, theme, setLeftContent, setRightContent, toggleWordWrap]);
+
+  useEffect(() => {
+    if (diffEditorInstanceRef.current) {
+      const wordWrap = compareMode === 'json' ? jsonWordWrap : fileWordWrap;
+      const originalEditor = diffEditorInstanceRef.current.getOriginalEditor();
+      const modifiedEditor = diffEditorInstanceRef.current.getModifiedEditor();
+      originalEditor.updateOptions({ wordWrap });
+      modifiedEditor.updateOptions({ wordWrap });
+    }
+  }, [jsonWordWrap, fileWordWrap, compareMode]);
 
   const handleCopy = (editorType: 'original' | 'modified') => {
     const editor = editorType === 'original'
