@@ -3,7 +3,7 @@ import { useMainEditorStore } from '../../../store/mainEditorStore';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
 
 export const InputTypeSelector: React.FC = () => {
-  const { inputType, setInputType } = useMainEditorStore();
+  const { inputType, setInputType, setJsonString: setMainEditorJsonString } = useMainEditorStore();
   const { jsonString, validateAndUpdate } = useJsonData();
 
   const commonClasses = "px-3 py-1 rounded-md text-sm font-medium transition-colors";
@@ -12,7 +12,11 @@ export const InputTypeSelector: React.FC = () => {
 
   const handleTypeChange = (newInputType: 'json' | 'base64') => {
     setInputType(newInputType);
-    validateAndUpdate(jsonString);
+    if (newInputType === 'base64') {
+      setMainEditorJsonString('');
+    } else {
+      validateAndUpdate(jsonString);
+    }
   };
 
   return (

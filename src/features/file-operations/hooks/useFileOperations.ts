@@ -20,7 +20,7 @@ interface UseFileOperationsReturn {
 
 export const useFileOperations = (): UseFileOperationsReturn => {
   const { jsonData, jsonString, setJsonString, formatJson, minifyJson, undo, redo, canUndo, canRedo } = useJsonData();
-  const { setInputType } = useMainEditorStore();
+  const { inputType, setJsonString: setMainEditorJsonString, setInputType, jsonString: mainEditorJsonString } = useMainEditorStore();
 
   const handleExport = useCallback(() => {
     try {
@@ -43,12 +43,16 @@ export const useFileOperations = (): UseFileOperationsReturn => {
   const handlePaste = useCallback(async () => {
     const text = await readFromClipboard();
     if (text) {
-      setJsonString(text.trim(), 'paste');
-      toast.success('JSON pasted from clipboard!');
+      if (inputType === 'base64') {
+        setMainEditorJsonString(text.trim());
+      } else {
+        setJsonString(text.trim(), 'paste');
+      }
+      toast.success('Content pasted from clipboard!');
     } else {
       toast.error('Failed to read from clipboard');
     }
-  }, [setJsonString]);
+  }, [setJsonString, setMainEditorJsonString, inputType]);
 
   const handleFormat = useCallback(() => {
     formatJson();
@@ -61,18 +65,20 @@ export const useFileOperations = (): UseFileOperationsReturn => {
   }, [minifyJson]);
 
   const handleDecodeBase64 = useCallback(() => {
-    if (!jsonString) {
+    const contentToDecode = inputType === 'base64' ? mainEditorJsonString : jsonString;
+
+    if (!contentToDecode) {
       toast.error('No content to decode.');
       return;
     }
 
-    if (!isBase64(jsonString)) {
+    if (!isBase64(contentToDecode)) {
       toast.error('Content is not a valid Base64 string.');
       return;
     }
 
     try {
-      const decoded = atob(jsonString);
+      const decoded = atob(contentToDecode);
       let parsedJson;
       try {
         parsedJson = JSON.parse(decoded);
@@ -88,7 +94,7 @@ export const useFileOperations = (): UseFileOperationsReturn => {
     } catch (error) {
       toast.error('Failed to decode Base64: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
-  }, [jsonString, setJsonString, setInputType]);
+  }, [jsonString, setJsonString, setInputType, inputType, mainEditorJsonString]);
 
   return {
     handleExport,

@@ -11,7 +11,7 @@ import { useEditorStore } from '../../../store/editorStore';
 export const CodeEditor: React.FC = () => {
   const { jsonString, setJsonString, errors, isValid } = useJsonData();
   const { theme } = useTheme();
-  const { searchQuery, inputType } = useMainEditorStore();
+  const { searchQuery, inputType, setJsonString: setMainEditorJsonString, jsonString: mainEditorJsonString } = useMainEditorStore();
   const { wordWrap, toggleWordWrap } = useEditorStore();
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
@@ -103,8 +103,14 @@ export const CodeEditor: React.FC = () => {
       <Editor
         height="100%"
         defaultLanguage={inputType === 'base64' ? 'plaintext' : 'json'}
-        value={jsonString}
-        onChange={(value) => setJsonString(value || '', 'edit')}
+        value={inputType === 'base64' ? mainEditorJsonString : jsonString}
+        onChange={(value) => {
+          if (inputType === 'base64') {
+            setMainEditorJsonString(value || '');
+          } else {
+            setJsonString(value || '', 'edit');
+          }
+        }}
         onMount={handleEditorDidMount}
         theme={theme === 'dark' ? 'json-dark' : 'json-light'}
         options={getMonacoEditorOptions(wordWrap) as any}
