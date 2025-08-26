@@ -79,22 +79,20 @@ export const useFileOperations = (): UseFileOperationsReturn => {
 
     try {
       const decoded = atob(contentToDecode);
-      let parsedJson;
       try {
-        parsedJson = JSON.parse(decoded);
+        const parsedJson = JSON.parse(decoded);
+        const formattedJson = formatJsonUtil(parsedJson);
+        setJsonString(formattedJson, 'decode_base64');
+        setInputType('json');
+        toast.success('Base64 decoded and formatted as JSON!');
       } catch {
-        toast.error('Decoded content is not valid JSON.');
-        return;
+        setMainEditorJsonString(decoded);
+        (toast as any).warning('Decoded successfully, but the content is not valid JSON.');
       }
-
-      const formattedJson = formatJsonUtil(parsedJson);
-      setJsonString(formattedJson, 'decode_base64');
-      setInputType('json');
-      toast.success('Base64 decoded and formatted as JSON!');
     } catch (error) {
       toast.error('Failed to decode Base64: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
-  }, [jsonString, setJsonString, setInputType, inputType, mainEditorJsonString]);
+  }, [jsonString, setJsonString, setInputType, inputType, mainEditorJsonString, setMainEditorJsonString]);
 
   return {
     handleExport,

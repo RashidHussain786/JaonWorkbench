@@ -45,7 +45,7 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
 }) => {
   const diffEditorRef = useRef<HTMLDivElement>(null);
   const diffEditorInstanceRef = useRef<monaco.editor.IStandaloneDiffEditor | null>(null);
-  const { wordWrap, toggleWordWrap } = useEditorStore();
+  const { jsonWordWrap, fileWordWrap, toggleWordWrap } = useEditorStore();
 
   const {
     compareMode,
@@ -89,13 +89,10 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
       const originalEditor = diffEditorInstanceRef.current.getOriginalEditor();
       const modifiedEditor = diffEditorInstanceRef.current.getModifiedEditor();
 
-      originalEditor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
-        toggleWordWrap();
-      });
+      const toggle = () => toggleWordWrap(compareMode === 'json' ? 'json' : 'file');
 
-      modifiedEditor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
-        toggleWordWrap();
-      });
+      originalEditor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, toggle);
+      modifiedEditor.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, toggle);
 
       originalEditor.onDidChangeModelContent(() => {
         setLeftContent(originalEditor.getValue());
@@ -115,12 +112,13 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
 
   useEffect(() => {
     if (diffEditorInstanceRef.current) {
+      const wordWrap = compareMode === 'json' ? jsonWordWrap : fileWordWrap;
       const originalEditor = diffEditorInstanceRef.current.getOriginalEditor();
       const modifiedEditor = diffEditorInstanceRef.current.getModifiedEditor();
-      originalEditor.updateOptions({ wordWrap: wordWrap });
-      modifiedEditor.updateOptions({ wordWrap: wordWrap });
+      originalEditor.updateOptions({ wordWrap });
+      modifiedEditor.updateOptions({ wordWrap });
     }
-  }, [wordWrap]);
+  }, [jsonWordWrap, fileWordWrap, compareMode]);
 
   const handleCopy = (editorType: 'original' | 'modified') => {
     const editor = editorType === 'original'

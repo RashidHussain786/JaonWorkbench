@@ -1,6 +1,6 @@
 import React, { useEffect, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
-import ErrorBoundary from './components/ErrorBoundary';
+import ErrorBoundary from './common/components/ErrorBoundary';
 import { Header, Sidebar, StatusBar, FileDropzone, ModeSelector, InputTypeSelector, CompareButton } from './features/layout/components/index';
 import { SearchBar } from './features/search/components/index';
 import { ActionButtons } from './features/file-operations/components/index';
@@ -11,8 +11,8 @@ import { JsonDataContext } from './features/json-data/context/JsonDataContext';
 import { useJsonData } from './features/json-data/hooks/useJsonData';
 import { ThemeContext } from './features/theme/context/ThemeContext';
 import { useTheme } from './features/theme/hooks/useTheme';
-import FeatureTour from './components/FeatureTour';
-import Spinner from './components/Spinner';
+import FeatureTour from './common/components/FeatureTour';
+import Spinner from './common/components/Spinner';
 import { useSidebarStore } from './store/sidebarStore';
 
 // Dynamically import view mode components
@@ -24,7 +24,7 @@ const LazyFolderCompareLayout = React.lazy(() => import('./features/folder-compa
 
 
 function App() {
-  const { activeMode } = useMainEditorStore();
+  const { activeMode, setInputType } = useMainEditorStore();
   const { isComparing, leftContent, rightContent, setLeftContent, setRightContent, setIsComparing, setCompareMode, compareMode, setOriginalJsonString, originalJsonString } = useCompareStore();
   const { setLeftFolderFiles, setRightFolderFiles, setActiveCompareFile } = useFolderCompareStore();
   const { validateAndUpdate, jsonString, undo, redo, formatJson, setJsonString } = useJsonData();
@@ -103,7 +103,8 @@ function App() {
     setActiveCompareFile(null);
     setLeftContent('');
     setRightContent('');
-    setJsonString(originalJsonString, 'restore_from_compare'); // Restore original JSON
+    setJsonString(originalJsonString, 'restore_from_compare');
+    setInputType('json');
   };
 
   const renderMainContent = () => {
