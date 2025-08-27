@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { useFolderCompareStore } from '../../../store/folderCompareStore';
 import CompareEditorLayout from '../../json-data/components/CompareEditorLayout';
 import { useFolderOperations } from '../hooks/useFolderOperations';
@@ -18,28 +18,38 @@ const Tab: React.FC<{ path: string; isActive: boolean; onClick: () => void; }> =
   const fileName = path.split('/').pop();
 
   return (
-    <button onClick={onClick} className={classes} title={path}>
+    <button onClick={onClick} className={classes} title={path} data-path={path}>
       {fileName}
     </button>
   );
 };
 
-const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
+const TabPanel: React.FC <{
+  isLeftPanel: boolean;
+  isSelecting: boolean;
+  selectFolder: () => void;
+}> = ({ isLeftPanel, isSelecting, selectFolder }) => {
   const { leftFolderFiles, rightFolderFiles, activeCompareFile, setActiveCompareFile } = useFolderCompareStore();
-  const { selectLeftFolder, selectRightFolder } = useFolderOperations();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const files = isLeftPanel ? leftFolderFiles : rightFolderFiles;
-  const selectFolder = isLeftPanel ? selectLeftFolder : selectRightFolder;
 
-  React.useEffect(() => {
-  }, [activeCompareFile, files]);
+  useEffect(() => {
+    if (scrollContainerRef.current && activeCompareFile) {
+      const activeTab = scrollContainerRef.current.querySelector(`[data-path="${activeCompareFile.replace(/"/g, '\"')}"]`) as HTMLElement;
+      if (activeTab) {
+        activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [activeCompareFile]);
 
   if (files.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-start px-1 py-1 bg-light-background dark:bg-dark-background/50">
         <button
           onClick={selectFolder}
-          className="flex items-center space-x-2 px-4 py-2 bg-light-surface text-light-text-primary rounded-md hover:bg-light-border transition-colors dark:bg-dark-surface dark:text-dark-text-primary dark:hover:bg-dark-border"
+          disabled={isSelecting}
+          className="flex items-center space-x-2 px-4 py-2 bg-light-surface text-light-text-primary rounded-md hover:bg-light-border transition-colors dark:bg-dark-surface dark:text-dark-text-primary dark:hover:bg-dark-border disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FolderPlus size={20} />
           <span>Select</span>
@@ -52,7 +62,7 @@ const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
   }
 
   return (
-    <div className="flex overflow-x-auto bg-light-background dark:bg-dark-background/50">
+    <div ref={scrollContainerRef} className="flex overflow-x-auto bg-light-background dark:bg-dark-background/50">
       {files.map(file => (
         <Tab
           key={file.path}
@@ -67,6 +77,7 @@ const TabPanel: React.FC<{ isLeftPanel: boolean }> = ({ isLeftPanel }) => {
 
 const FolderCompareLayout: React.FC<FolderCompareLayoutProps> = ({ handleExitCompareMode }) => {
   const { leftFolderFiles, rightFolderFiles, activeCompareFile } = useFolderCompareStore();
+  const { selectLeftFolder, selectRightFolder, isSelecting } = useFolderOperations();
 
   const activeFileContent = useMemo(() => {
     if (!activeCompareFile) {
@@ -94,10 +105,18 @@ const FolderCompareLayout: React.FC<FolderCompareLayoutProps> = ({ handleExitCom
       </button>
       <div className="grid grid-cols-2 min-h-0 border-b border-light-border dark:border-dark-border gap-x-4">
         <div className="flex flex-col min-w-0">
-          <TabPanel isLeftPanel={true} />
+          <TabPanel 
+            isLeftPanel={true} 
+            isSelecting={isSelecting} 
+            selectFolder={selectLeftFolder} 
+          />
         </div>
         <div className="flex flex-col min-w-0 border-l border-light-border dark:border-dark-border">
-          <TabPanel isLeftPanel={false} />
+          <TabPanel 
+            isLeftPanel={false} 
+            isSelecting={isSelecting} 
+            selectFolder={selectRightFolder} 
+          />
         </div>
       </div>
       <div className="flex-1 min-h-0">

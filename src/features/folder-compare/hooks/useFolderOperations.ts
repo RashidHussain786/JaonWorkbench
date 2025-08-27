@@ -1,10 +1,12 @@
 import { useFolderCompareStore } from '../../../store/folderCompareStore';
 import { FolderFile } from '../types';
 import { toast } from 'react-hot-toast';
+import { useState } from 'react';
 
 // This hook encapsulates the logic for selecting and reading folder contents.
 export const useFolderOperations = () => {
   const { setLeftFolderFiles, setRightFolderFiles, setActiveCompareFile, leftFolderFiles, rightFolderFiles } = useFolderCompareStore();
+  const [isSelecting, setIsSelecting] = useState(false);
 
   // Generic function to read files from a FileList, normalizing their paths
   const readFilesInDirectory = (files: FileList): Promise<FolderFile[]> => {
@@ -59,17 +61,25 @@ export const useFolderOperations = () => {
 
       let resolved = false;
 
+      const cleanup = () => {
+        if (input.parentNode) {
+          document.body.removeChild(input);
+        }
+        window.removeEventListener('focus', onFocus);
+        setIsSelecting(false);
+      };
+
       input.onchange = (e: Event) => {
-        const target = e.target as HTMLInputElement;
         if (resolved) return;
         resolved = true;
+        
+        const target = e.target as HTMLInputElement;
         if (target.files && target.files.length > 0) {
           resolve(target.files);
         } else {
           resolve(null);
         }
-        document.body.removeChild(input);
-        window.removeEventListener('focus', onFocus);
+        cleanup();
       };
 
       const onFocus = () => {
@@ -77,12 +87,12 @@ export const useFolderOperations = () => {
           if (!resolved) {
             resolved = true;
             resolve(null);
-            document.body.removeChild(input);
-            window.removeEventListener('focus', onFocus);
+            cleanup();
           }
         }, 500);
       };
 
+      setIsSelecting(true);
       window.addEventListener('focus', onFocus);
       input.click();
     });
@@ -92,7 +102,7 @@ export const useFolderOperations = () => {
   const selectLeftFolder = async () => {
     const filesList = await selectDirectory();
     if (!filesList) {
-      toast.error('Folder selection cancelled or failed.');
+      if (isSelecting) toast.error('Folder selection cancelled or failed.');
       return;
     }
     const files = await readFilesInDirectory(filesList);
@@ -109,7 +119,7 @@ export const useFolderOperations = () => {
   const selectRightFolder = async () => {
     const filesList = await selectDirectory();
     if (!filesList) {
-      toast.error('Folder selection cancelled or failed.');
+      if (isSelecting) toast.error('Folder selection cancelled or failed.');
       return;
     }
     const files = await readFilesInDirectory(filesList);
@@ -120,9 +130,7 @@ export const useFolderOperations = () => {
     if (leftFolderFiles.length === 0 && files.length > 0) {
       setActiveCompareFile(files[0].path);
     }
-
-    
   };
 
-  return { selectLeftFolder, selectRightFolder };
+  return { selectLeftFolder, selectRightFolder, isSelecting };
 };
