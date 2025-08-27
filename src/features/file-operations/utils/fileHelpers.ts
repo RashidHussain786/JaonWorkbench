@@ -1,5 +1,6 @@
 import { saveAs } from 'file-saver';
 import { FileImportResult } from '../../../common/types';
+import { escapeHtml } from '../../../utils/sanitize';
 
 export async function importFromFile(file: File): Promise<FileImportResult> {
   try {
@@ -9,7 +10,7 @@ export async function importFromFile(file: File): Promise<FileImportResult> {
   } catch (error) {
     return {
       success: false,
-      error: `Failed to import file: ${error instanceof Error ? error.message : 'Unknown error'}`
+      error: `Failed to import file: ${escapeHtml(error instanceof Error ? error.message : 'Unknown error')}`
     };
   }
 }
@@ -26,7 +27,7 @@ export async function importFromUrl(url: string): Promise<FileImportResult> {
   } catch (error) {
     return {
       success: false,
-      error: `Failed to fetch from URL: ${error instanceof Error ? error.message : 'Unknown error'}`
+      error: `Failed to fetch from URL: ${escapeHtml(error instanceof Error ? error.message : 'Unknown error')}`
     };
   }
 }
@@ -43,7 +44,7 @@ export function exportToFile(data: unknown, filename = 'data.json', format: 'jso
       saveAs(blob, filename.endsWith('.csv') ? filename : `${filename}.csv`);
     }
   } catch (error) {
-    throw new Error(`Failed to export file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(`Failed to export file: ${escapeHtml(error instanceof Error ? error.message : 'Unknown error')}`);
   }
 }
 

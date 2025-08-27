@@ -5,6 +5,7 @@ import { useJsonData } from '../../json-data/hooks/useJsonData';
 import { useMainEditorStore } from '../../../store/mainEditorStore';
 import { isBase64, formatJson as formatJsonUtil } from '../../../utils/jsonHelpers';
 import '../../../common/components/WarningToast';
+import { escapeHtml } from '../../../utils/sanitize';
 
 interface UseFileOperationsReturn {
   handleExport: () => void;
@@ -28,7 +29,7 @@ export const useFileOperations = (): UseFileOperationsReturn => {
       exportToFile(jsonData);
       toast.success('JSON exported successfully!');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Export failed');
+      toast.error(escapeHtml(error instanceof Error ? error.message : 'Export failed'));
     }
   }, [jsonData]);
 
@@ -91,7 +92,7 @@ export const useFileOperations = (): UseFileOperationsReturn => {
         (toast as any).warning('Decoded successfully, but the content is not valid JSON.');
       }
     } catch (error) {
-      toast.error('Failed to decode Base64: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      toast.error('Failed to decode Base64: ' + escapeHtml(error instanceof Error ? error.message : 'Unknown error'));
     }
   }, [jsonString, setJsonString, setInputType, inputType, mainEditorJsonString, setMainEditorJsonString]);
 
