@@ -25,7 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         placeholder={placeholder}
         value={searchValue}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="w-full pl-10 pr-8 py-2 border border-light-border dark:border-dark-border rounded-md bg-light-surface dark:bg-dark-surface focus:outline-none focus:ring-1 focus:ring-light-primary dark:focus:ring-dark-primary disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full pl-10 pr-8 py-1 border border-light-border dark:border-dark-border rounded-md bg-light-surface dark:bg-dark-surface focus:outline-none focus:ring-1 focus:ring-light-primary dark:focus:ring-dark-primary disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={disabled}
       />
       {searchValue && (
