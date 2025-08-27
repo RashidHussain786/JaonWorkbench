@@ -2,7 +2,7 @@ import React, { useEffect, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ErrorBoundary from './common/components/ErrorBoundary';
 import { Header, Sidebar, StatusBar, FileDropzone, ModeSelector, InputTypeSelector, CompareButton } from './features/layout/components/index';
-import { SearchBar } from './features/search/components/index';
+import { JsonEditorSearchBar } from './features/search/components/JsonEditorSearchBar';
 import { ActionButtons } from './features/file-operations/components/index';
 import { useMainEditorStore } from './store/mainEditorStore';
 import { useCompareStore } from './store/compareStore';
@@ -146,7 +146,7 @@ function App() {
                       <ModeSelector />
                       <InputTypeSelector />
                       <ActionButtons />
-                      <SearchBar />
+                      <JsonEditorSearchBar />
                       <CompareButton />
                     </div>
                   </div>

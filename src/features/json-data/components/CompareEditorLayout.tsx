@@ -3,6 +3,7 @@ import * as monaco from 'monaco-editor';
 import { defineMonacoThemes } from '../utils/monacoThemes';
 import { X } from 'lucide-react';
 import { useEditorStore } from '../../../store/editorStore';
+import SearchBar from '../../search/components/SearchBar';
 
 // Define Monaco themes once
 defineMonacoThemes(monaco);
@@ -25,7 +26,7 @@ defineMonacoThemes(monaco);
   },
 };
 import { useCompareStore } from '../../../store/compareStore';
-import { Search, ChevronUp, ChevronDown, Copy, Clipboard, FileUp, FileDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, Copy, Clipboard, FileUp, FileDown } from 'lucide-react';
 import { useTheme } from '../../theme/hooks/useTheme';
 import { useCompareSearch } from '../hooks/useCompareSearch';
 import { toast } from 'react-hot-toast';
@@ -119,6 +120,16 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
       modifiedEditor.updateOptions({ wordWrap });
     }
   }, [jsonWordWrap, fileWordWrap, compareMode]);
+
+  const handleLeftSearchChange = (value: string) => {
+    setLeftSearchQuery(value);
+    handleSearch(diffEditorInstanceRef.current?.getOriginalEditor() ?? null, value, true);
+  };
+
+  const handleRightSearchChange = (value: string) => {
+    setRightSearchQuery(value);
+    handleSearch(diffEditorInstanceRef.current?.getModifiedEditor() ?? null, value, false);
+  };
 
   const handleCopy = (editorType: 'original' | 'modified') => {
     const editor = editorType === 'original'
@@ -219,17 +230,11 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
         <div className="flex space-x-4 items-center">
           {/* Left Controls */}
           <div className="flex-1 flex items-center space-x-2">
-            <div className="relative flex-1">
-              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-secondary" />
-              <input
-                type="text"
-                placeholder="Search left..."
-                value={leftSearchQuery}
-                onChange={(e) => {
-                  setLeftSearchQuery(e.target.value);
-                  handleSearch(diffEditorInstanceRef.current?.getOriginalEditor() ?? null, e.target.value, true);
-                }}
-                className="w-full pl-10 pr-4 py-1 border border-light-border dark:border-dark-border rounded-md bg-light-surface dark:bg-dark-surface text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-light-primary focus:border-transparent"
+            <div className="flex-1">
+              <SearchBar 
+                searchValue={leftSearchQuery} 
+                onSearchChange={handleLeftSearchChange} 
+                placeholder="Search left..." 
               />
             </div>
             {originalMatches.length > 0 && (
@@ -266,17 +271,11 @@ const CompareEditorLayout: React.FC<CompareEditorLayoutProps> = ({
           </div>
           {/* Right Controls */}
           <div className="flex-1 flex items-center space-x-2">
-            <div className="relative flex-1">
-              <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-secondary" />
-              <input
-                type="text"
-                placeholder="Search right..."
-                value={rightSearchQuery}
-                onChange={(e) => {
-                  setRightSearchQuery(e.target.value);
-                  handleSearch(diffEditorInstanceRef.current?.getModifiedEditor() ?? null, e.target.value, false);
-                }}
-                className="w-full pl-10 pr-4 py-1 border border-light-border dark:border-dark-border rounded-md bg-light-surface dark:bg-dark-surface text-light-text-primary dark:text-dark-text-primary focus:ring-2 focus:ring-light-primary focus:border-transparent"
+            <div className="flex-1">
+              <SearchBar 
+                searchValue={rightSearchQuery} 
+                onSearchChange={handleRightSearchChange} 
+                placeholder="Search right..." 
               />
             </div>
             {modifiedMatches.length > 0 && (
