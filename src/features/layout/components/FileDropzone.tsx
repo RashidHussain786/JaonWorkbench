@@ -5,6 +5,7 @@ import { useMainEditorStore } from '../../../store/mainEditorStore';
 import { useJsonData } from '../../json-data/hooks/useJsonData';
 import { importFromFile } from '../../file-operations/utils/fileHelpers';
 import toast from 'react-hot-toast';
+import { escapeHtml } from '../../../utils/sanitize';
 
 export const FileDropzone: React.FC = () => {
   const { setJsonData } = useJsonData();
@@ -20,9 +21,9 @@ export const FileDropzone: React.FC = () => {
       const result = await importFromFile(file);
       if (result.success && result.data) {
         setJsonData(result.data, 'import');
-        toast.success(`Imported ${file.name} successfully!`);
+        toast.success(`Imported ${escapeHtml(file.name)} successfully!`);
       } else {
-        toast.error(result.error || 'Failed to import file');
+        toast.error(escapeHtml(result.error || 'Failed to import file'));
       }
     } catch {
       toast.error('Failed to process file');

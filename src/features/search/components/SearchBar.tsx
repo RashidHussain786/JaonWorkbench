@@ -1,25 +1,43 @@
 import React from 'react';
-import { Search } from 'lucide-react';
-import { useSearch } from '../hooks/useSearch';
-import { useJsonData } from '../../json-data/hooks/useJsonData';
+import { X, Search as SearchIcon } from 'lucide-react';
 
-export const SearchBar: React.FC = () => {
-  const { isValid } = useJsonData();
-  const { searchQuery, handleSearchChange } = useSearch();
+interface SearchBarProps {
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+}
 
+const SearchBar: React.FC<SearchBarProps> = ({
+  searchValue,
+  onSearchChange,
+  placeholder = "Search...",
+  disabled = false,
+}) => {
   return (
-    <div className="relative">
-      <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-text-secondary" />
+    <div className="relative w-full">
+      <SearchIcon
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        size={18}
+      />
       <input
         type="text"
-        placeholder="Search in JSON..."
-        value={searchQuery}
-        onChange={(e) => handleSearchChange(e.target.value)}
-        className="w-full pl-10 pr-4 py-1 border border-light-border dark:border-dark-border rounded-lg 
-                 bg-light-surface dark:bg-dark-surface text-light-text-primary dark:text-dark-text-primary
-                 focus:ring-2 focus:ring-light-primary focus:border-transparent"
-        disabled={!isValid}
+        placeholder={placeholder}
+        value={searchValue}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="w-full pl-10 pr-8 py-1 border border-light-border dark:border-dark-border rounded-md bg-light-surface dark:bg-dark-surface focus:outline-none focus:ring-1 focus:ring-light-primary dark:focus:ring-dark-primary disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={disabled}
       />
+      {searchValue && (
+        <button
+          onClick={() => onSearchChange('')}
+          className="absolute right-2 top-1/2 -translate-y-1/2"
+        >
+          <X size={18} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200" />
+        </button>
+      )}
     </div>
   );
 };
+
+export default SearchBar;
