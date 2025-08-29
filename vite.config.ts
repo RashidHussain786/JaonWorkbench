@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import monacoEditorPluginRaw from 'vite-plugin-monaco-editor';
+import sitemap from 'vite-plugin-sitemap';
 
 const monacoEditorPlugin = (monacoEditorPluginRaw as any).default || monacoEditorPluginRaw;
 
@@ -17,6 +18,9 @@ export default defineConfig({
         'typescript',
       ],
       publicPath: "monacoeditorwork",
+    }),
+    sitemap({
+      hostname: 'https://josnworkbench.com/',
     }),
   ],
   optimizeDeps: {
